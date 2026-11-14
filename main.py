@@ -8,6 +8,8 @@ interface. To add a new provider later, add a branch here that builds it
 models/base.py don't need to change.
 """
 
+import logging
+import os
 import re
 import sys
 import threading
@@ -231,10 +233,18 @@ def build_voice_lines(set_name=None):
         lines = sets.get(name, [])
     else:
         lines = settings.VOICE_LINES        # older config, no sets defined
-    return [
-        (re.compile(pattern, re.IGNORECASE), path)
-        for pattern, path in lines
-    ]
+    # 缺檔的片段直接略過。原本會原封不動傳給語音引擎，引擎一檢查到檔案不在
+    # 就整個初始化失敗，結果大賢者完全沒有聲音——作者最後一版刪掉了
+    # voice_lines/ 裡大部分的檔案，設定卻還指著 notice.wav，正好踩到。
+    # 沒有片段的句子本來就會改用即時合成，所以略過是安全的。
+    kept = []
+    for pattern, path in lines:
+        if os.path.isfile(path):
+            kept.append((re.compile(pattern, re.IGNORECASE), path))
+        else:
+            logging.getLogger(__name__).warning(
+                "Voice line clip missing, using live TTS instead: %s", path)
+    return kept
 
 
 def build_voice(provider: ModelProvider):
