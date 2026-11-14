@@ -1,182 +1,127 @@
-# Great Sage
+# Great Sage (Traditional Chinese · Taiwanese Mandarin edition)
 
-A local-first Windows desktop AI companion, built around a 3D HUD rather
-than a chat window. Everything runs on your machine: the model, the
-speech recognition, and the voice.
+[繁體中文](README.md) | **English**
 
-- **Talk to it.** Hold one key from anywhere - including inside a game -
-  say what you want, let go. Transcribed locally with faster-whisper.
-- **It answers in a cloned voice**, synthesised locally with F5-TTS.
-- **It does things.** Opens pages, launches applications, opens folders,
-  searches the web and YouTube, reads your screen, reports free VRAM and
-  disk, sets reminders.
-- **A HUD, not a text box.** A Three.js scene that reacts to speech and
-  to what it is doing, with a compact always-on-top overlay mode that
-  clicks straight through to whatever is behind it.
-- **Two looks.** Great Sage, and Raphael - a second scene with its own
-  bloom, glare and water, switched from a dropdown. Each keeps its own
-  settings.
+A local-first Windows voice AI assistant. Hold Alt+1 and speak; Great Sage answers in Mandarin with a Taiwanese accent, and can open apps and websites, search the web, and look at your screen.
 
-Named for the skill in *That Time I Got Reincarnated as a Slime*, and it
-addresses you as Master.
+This is a fork of [shogunyan12/The-GREAT-SAGE](https://github.com/shogunyan12/The-GREAT-SAGE). The original author, Krazaa, built the English version, named after the skill "Great Sage" from *That Time I Got Reincarnated as a Slime*. This fork localizes it to Traditional Chinese, Taiwanese wording and a Taiwanese-accented voice. For the original English documentation, see the [upstream README](https://github.com/shogunyan12/The-GREAT-SAGE#readme).
 
-## What you need
+> All localization changes live on the **`zh-tw` branch**; `master` is the upstream version.
 
-| | |
+---
+
+## What's different from upstream
+
+### Localization
+- **Interface**: menus, settings, the chat panel and messages are in Traditional Chinese.
+- **Persona**: the system prompt was rewritten in Chinese while keeping Great Sage's voice, e.g. 「告。」 (Notice.), 「解。」 (Answer.), 「尚未取得。」 (Not yet acquired.), 「警告。預測結果不利。」 (Warning. Projected outcome is unfavourable.).
+- **Simplified → Traditional**: when the model or speech recognition emits Simplified Chinese, [OpenCC](https://github.com/yichen0831/opencc-python) (s2twp) converts it to Traditional Chinese with Taiwanese vocabulary.
+- **Speech recognition**: Whisper switched from the English-only `base.en` to multilingual `small`, fixed to Chinese; mixed Chinese–English commands such as 「打開 Spotify」 still work.
+- **Wake words**: 「大賢者」, 「嘿大賢者」, 「智慧之王」. Upstream's matcher stripped every non-ASCII character, so a Chinese wake word could never match; this is fixed.
+- **Chinese commands**: phrases like 「現在幾點」 (what time is it), 「打開下載資料夾」 (open my downloads folder) or 「在 YouTube 搜尋……然後點第一個」 (search YouTube for … and play the first one) are routed straight to tools. `check_routing.py` grew from 49 to 83 cases; the original English commands still work.
+- **Other Chinese adaptations**: Chinese versions of the guardrails (persona breaks such as "I am a language model", prompt leaks), memory recall (character bigrams as keywords), and mode names.
+
+### Taiwanese-accented voice (F5-TTS)
+- **Default voices**: three Taiwanese female speakers picked from the [Mozilla Common Voice](https://commonvoice.mozilla.org/) 25 Taiwan Mandarin dataset (CC0, via [OpenFormosa/common_voice_25_zh-TW](https://huggingface.co/datasets/OpenFormosa/common_voice_25_zh-TW)) as reference voices: `voice_cv01`, `voice_cv09`, `voice_cv15`. The default is cv09.
+- **Sentence-by-sentence synthesis**: Chinese is synthesized one sentence at a time with a fixed 0.3 s pause in between. Synthesizing the whole reply at once and then speeding it up squashed the pauses.
+- **Automatic speaking rate**: the rate is normalized to about 5 characters per second based on the reference clip.
+- **Text clean-up before speaking** (audio only; the on-screen text is unchanged):
+  - The enumeration comma 「、」 is read as a pause.
+  - Quotes and brackets are dropped.
+  - Numbers are read in Chinese, e.g. 「20%」 as 「百分之二十」 and 「20-27度」 as 「二十到二十七度」.
+  - Model numbers are read digit by digit, e.g. 「RTX 5090」 as 「RTX 五零九零」.
+- **No swallowed words**: reference clips are kept under 10.5 s (F5 trims longer ones, which leaks the clip's tail into the output), and very short sentences such as 「告。」 are merged into the next one.
+
+### Bug fixes
+- **Missing voice-line clips**: upstream removed most pre-recorded clips but the config still pointed at `notice.wav`, so the whole voice engine failed to start and the app fell back to text only. Missing clips are now skipped.
+- **FFmpeg DLLs**: recent torchaudio needs the DLLs of a **shared** FFmpeg 4–7 build. The app now loads them from the project's `ffmpeg\bin` (Python on Windows does not search PATH for DLLs).
+- **Duplicate launches**: only one instance can run. Start-up takes 10+ seconds, and clicking the shortcut again used to start several copies that fought over the hotkey and microphone.
+- **Offline-first speech recognition**: Whisper loads the locally cached model instead of contacting Hugging Face on every load.
+- **Chat panel menu**: in the standalone chat panel window, the three-dot menu and confirmation dialogs were hidden by CSS, so clicks appeared to do nothing.
+- **Encoding**: Taiwanese Windows defaults to cp950. The app now runs in UTF-8 mode and decodes child-process output as UTF-8 to avoid mojibake.
+
+---
+
+## Installation (Windows 10/11, NVIDIA GPU)
+
+Requirements:
+
+| Item | Notes |
 |---|---|
-| Windows | 10 or 11 |
-| [Ollama](https://ollama.com/download) | running locally, with `ollama pull qwen3.5:4b` |
-| Python 3.14 | the app itself |
-| Python 3.11 | a second venv, for the overlay window only |
-| NVIDIA GPU | not required, but F5-TTS is too slow to speak in real time on CPU. Developed on a 3060 (12GB) |
+| Python 3.14 | the main app |
+| Python 3.11 | only for the transparent overlay (PySide6 6.4.3 has no 3.14 build) |
+| [Ollama](https://ollama.com/download) | local language model; pull `qwen3.5:4b` |
+| FFmpeg 7.x **shared** build | e.g. [ffmpeg-7.1.1-full_build-shared](https://github.com/GyanD/codexffmpeg/releases/download/7.1.1/ffmpeg-7.1.1-full_build-shared.zip); put its `bin` folder at `ffmpeg\bin` in the project. **FFmpeg 8 and static builds will not work** |
+| NVIDIA GPU | 8 GB VRAM works, but not alongside a large game |
 
-The two Python versions are not a mistake. The transparent overlay needs
-PySide6 6.4.3, which has no build for 3.14; newer Qt flickers through
-ANGLE on a translucent always-on-top window. So the overlay is a separate
-process on 3.11 and the main app runs on 3.14. See `NOTES.md`.
-
-## Install
-
-**[Full step-by-step guide, with troubleshooting -> INSTALL.md](INSTALL.md)**
-Start there if anything goes wrong, particularly if it replies in text but
-never speaks.
-
-The short version:
-
-```bash
-git clone https://github.com/shogunyan12/The-GREAT-SAGE.git
+```powershell
+git clone -b zh-tw https://github.com/Uokio516/The-GREAT-SAGE.git
 cd The-GREAT-SAGE
 
-# torch FIRST, with the CUDA build for your GPU - otherwise pip resolves
-# the CPU build and the voice is unusably slow. Check yours with nvidia-smi.
-pip install torch --index-url https://download.pytorch.org/whl/cu121
-pip install -r requirements.txt
+# Main app: install the CUDA build of PyTorch first, then everything else
+py -3.14 -m venv .venv
+.venv\Scripts\pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu128
+.venv\Scripts\pip install -r requirements.txt
 
-# The overlay's own environment
+# Overlay environment
 py -3.11 -m venv .overlay-venv
 .overlay-venv\Scripts\pip install PySide6==6.4.3
 
+# Language model
 ollama pull qwen3.5:4b
+
+# Run (-X utf8 matters: it prevents garbled Chinese)
+.venv\Scripts\pythonw.exe -X utf8 app.py
 ```
 
-## Run
+The first time Great Sage speaks it downloads the voice models (F5-TTS about 3.6 GB, Whisper small about 460 MB), so the first reply is slow. If anything goes wrong, check `great_sage.log` in the project folder first.
 
-```bash
-py app.py
-```
+## Usage
 
-First launch downloads the F5-TTS and faster-whisper models (a few GB,
-once). After that it is fully offline apart from web search and anything
-you ask it to fetch.
-
-## Use
-
-| | |
+| Action | What it does |
 |---|---|
-| **Alt+1** | hold to talk, release to send. Works from any window |
-| **Click the core** | opens the radial menu: settings, chat, logs, overlay |
-| **F1** | shows and hides the developer chrome |
-| **Esc** | closes whatever is open |
+| Hold **Alt+1** | talk; release to send. Works from any window, including games |
+| Click the core | open the menu: settings, chat, logs, overlay |
+| Say 「大賢者，……」 | voice wake-up (enable it in settings first) |
+| ✕ at the top right | quit Great Sage |
 
-Say things like *"what time is it"*, *"open spotify"*, *"search the web
-for..."*, *"search on youtube for X and play the first video"*, *"look at
-my screen"*. Requests to DO something are carried out and not narrated -
-it opens the thing and says nothing.
+Things to try:
 
-## Themes
+- 「現在幾點」 (what time is it)
+- 「顯存還剩多少」 (how much VRAM is free)
+- 「打開 Spotify」 (open Spotify)
+- 「打開下載資料夾」 (open my downloads folder)
+- 「搜尋台中明天的天氣」 (search for tomorrow's weather in Taichung)
+- 「在 YouTube 搜尋轉生史萊姆片頭然後點第一個」 (search YouTube for the Slime opening and play the first result)
+- 「看一下我的螢幕」 (look at my screen)
 
-**Settings -> Theme** switches between **Great Sage** and **Raphael**.
+## Tuning
 
-Only the home visuals and the overlay change. The interface, the voice,
-the chats and the keybinds are shared, and each theme keeps its own copy
-of every visual slider - move one on Raphael and Great Sage is untouched,
-switch back and your settings are still there.
+The main settings are in `great_sage/config/settings.py`:
 
-Raphael is a different scene rather than a different palette: a
-twelve-sided core, rings of turning script, and a screen-space bloom
-stage that Great Sage never runs. That stage costs about six points of
-GPU on a 3060 at 1904x1041, and only while Raphael is the active theme.
+| Setting | Default | Purpose |
+|---|---|---|
+| `STT_MODEL` | `small` | speech recognition model (base / small / medium; larger is more accurate and slower) |
+| `F5_CJK_CHARS_PER_SEC` | `5.0` | Chinese speaking rate (characters per second) |
+| `F5_CJK_SENTENCE_GAP` | `0.3` | pause between sentences, in seconds |
+| `F5_CJK_SPLIT_COMMA` | `False` | `True` also splits at commas, with a fixed pause |
+| `F5_NFE_STEP_CJK` | `32` | sampling steps for Chinese; higher is clearer and slower |
 
-## Build a standalone exe
+Switch voices in the interface under 設定 → 聲音自訂 (Settings → Voice). To use your own voice, put a clear 5–10 s recording in `voice_samples/candidates/` with a `.txt` transcript of the same name. Keep the clip under 10.5 s.
 
-```bash
-py build.py
+## Checks
+
+Run these after changing the code (the build also runs them):
+
+```powershell
+.venv\Scripts\python -X utf8 check_js.py
+.venv\Scripts\python -X utf8 check_shaders.py
+.venv\Scripts\python -X utf8 check_routing.py
 ```
 
-Produces `dist/GreatSage/` (about 5.5 GB - it carries torch, F5-TTS and
-Whisper) and puts a shortcut on your Desktop. Two bundles are built and
-merged: the app on 3.14 and the overlay on 3.11.
+## License and sources
 
-The build runs three checks first and refuses to package if any fail:
-
-```bash
-py check_js.py         # the inline HUD script parses at all
-py check_shaders.py    # GLSL template literals are balanced
-py check_routing.py    # asking it to do something actually does it
-```
-
-`check_routing.py` is the important one. The failure it guards against is
-not a crash - it is Great Sage confidently answering "I cannot do that"
-to something it can do. Several cases in it are transcripts of real
-requests that were refused.
-
-## Configuration
-
-`great_sage/config/settings.py` holds everything tunable: the model, the
-system prompt, voice engine and speed, the global hotkey. Most of it is
-also reachable from the settings panel in the app, which is the better
-place to change it.
-
-Your data - conversations, memories, API keys, settings - is written
-beside the exe (or in the project folder when run from source) and is
-never committed.
-
-## Project layout
-
-```
-app.py                  entry point; checks prerequisites, then the HUD
-run_hud.py              the native window and the WebSocket bridge
-overlay_window.py       the transparent overlay + settings/history windows
-hud_prototype.html      the entire HUD: Three.js scene, chat, settings
-build.py                two-bundle PyInstaller build
-check_*.py              the gates the build will not ship without
-
-great_sage/
-  config/settings.py    every tunable value
-  models/               ModelProvider interface + Ollama, OpenAI, Anthropic
-  core/
-    chat_engine.py      conversation, tool loop
-    tools.py            the 16 tools, and the deterministic pre-routing
-    memory*.py          long-term memory
-    state.py            internal state that shapes replies
-    autonomy.py         scheduled tasks and folder watching
-  voice/
-    f5_tts_engine.py    cloned-voice synthesis
-    speech_to_text.py   faster-whisper
-assets/sfx/             interface sounds
-voice_samples/          the voices Great Sage speaks with
-```
-
-`NOTES.md` has the history and the environment quirks. Read it before
-touching `voice/` or `config/settings.py` - most of what looks like an
-odd choice in there is load-bearing and the reason is written down.
-
-## Known limitations
-
-- **Windows only.** The overlay, the global hotkey and the window
-  handling are all Win32.
-- **The model is small.** qwen3.5:4b was chosen to leave GPU headroom for
-  gaming while it runs. It is not reliable at deciding to use a tool,
-  which is why the requests that matter are pre-routed deterministically
-  rather than left to it.
-- **First launch is slow** and needs the network, for the model
-  downloads.
-- **No test suite for the Python core.** The three checks above cover the
-  HUD script and the routing table; the rest is verified by running it.
-- **Image generation is not implemented**, deliberately.
-
-## Credits
-
-The pre-recorded voice lines under `voice_lines/` are audio from *That
-Time I Got Reincarnated as a Slime*, used here for a personal companion
-project. They are not mine and are included for that purpose only.
+- **Code**: by the original author, [shogunyan12 (Krazaa)](https://github.com/shogunyan12/The-GREAT-SAGE). The upstream project **has no license**. This fork publishes its changes as a GitHub fork under GitHub's Terms of Service and does not add a license. Ask the original author before using it for anything else.
+- **Default voices** `voice_cv01` / `voice_cv09` / `voice_cv15`: from the Mozilla Common Voice Taiwan Mandarin dataset, CC0 (public domain). Per Common Voice's terms, do not attempt to identify the speakers.
+- **Upstream voice lines**: the clips in `voice_lines/` come from the anime *That Time I Got Reincarnated as a Slime* and belong to their rights holders; the original author notes they are for personal use only.
+- **"Great Sage"** is a character and skill name from *That Time I Got Reincarnated as a Slime* (Fuse / Kodansha). This is an unofficial fan project, not affiliated with the original work or Kodansha.

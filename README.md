@@ -1,8 +1,10 @@
 # 大賢者 Great Sage（繁體中文・台灣腔版）
 
+**繁體中文** | [English](README.en.md)
+
 本機執行的 Windows 語音 AI 助理。按住 Alt+1 說話，大賢者會用台灣腔的中文回答，也能幫你開程式、開網頁、搜尋、看螢幕。
 
-這個專案是 [shogunyan12/The-GREAT-SAGE](https://github.com/shogunyan12/The-GREAT-SAGE) 的 fork。原作者 Krazaa 做了英文版，名字取自《關於我轉生變成史萊姆這檔事》裡的技能「大賢者」。這個 fork 把它改成繁體中文、台灣用語、台灣腔語音。原作者的英文說明保留在 [README.en.md](README.en.md)。
+這個專案是 [shogunyan12/The-GREAT-SAGE](https://github.com/shogunyan12/The-GREAT-SAGE) 的 fork。原作者 Krazaa 做了英文版，名字取自《關於我轉生變成史萊姆這檔事》裡的技能「大賢者」。這個 fork 把它改成繁體中文、台灣用語、台灣腔語音。原作者的英文說明請看[原專案](https://github.com/shogunyan12/The-GREAT-SAGE#readme)。
 
 > 所有繁中化的修改都在 **`zh-tw` 分支**；`master` 是原作者的版本。
 
