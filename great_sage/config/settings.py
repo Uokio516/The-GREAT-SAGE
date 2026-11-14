@@ -595,8 +595,8 @@ CLONE_REFERENCE_AUDIO_PATH = os.path.join("voice_samples", "my_voice_clean.wav")
 # Reference clip to clone. A "<name>.txt" sidecar holding that clip's
 # transcript is optional but preferred - without one, F5 transcribes the
 # clip itself at startup, which is slower and less accurate.
-# 繁中化：預設改用 Common Voice 台灣華語（CC0）挑出的台灣女聲 cv01。
-F5_REFERENCE_AUDIO_PATH = os.path.join("voice_samples", "candidates", "voice_cv01.wav")
+# 繁中化：預設改用 Common Voice 台灣華語（CC0）挑出的台灣女聲 cv09（使用者 11/14 選定）。
+F5_REFERENCE_AUDIO_PATH = os.path.join("voice_samples", "candidates", "voice_cv09.wav")
 
 # Flow-matching steps: the speed/quality dial, with no equivalent in an
 # autoregressive engine. Measured on one 9.5s line: 8 -> 2.16s (4.4x
