@@ -480,6 +480,8 @@ class F5TTSVoiceOutput(VoiceOutput):
         player receives ONE clip, with no seams to gap between.
         """
         import numpy as _np
+        if _is_cjk_text(text) and getattr(settings, "F5_CJK_PHRASE_SPLIT", True):
+            return self._generate_cjk_phrases(text)
         threshold = getattr(settings, "F5_CHUNK_THRESHOLD_CHARS", 260)
         target = getattr(settings, "F5_CHUNK_TARGET_CHARS", 220)
         if _is_cjk_text(text):
@@ -503,6 +505,45 @@ class F5TTSVoiceOutput(VoiceOutput):
         joined = chunks[0]
         for extra in chunks[1:]:
             joined = _np.concatenate([joined, gap, extra])
+        return _pad_tail(joined, rate), rate
+
+    def _generate_cjk_phrases(self, text: str):
+        """繁中化：中文逐句合成，句與句之間插入固定長度的靜音。
+
+        整段一次交給 F5 再整體加速時，句子間的停頓也一起被壓扁，聽起來一口氣
+        念到底。改成在句末標點（以及設定開啟時的逗號）切開、各自合成，再用
+        明確的靜音接起來：語速由 speed 決定，停頓長度由這裡決定，兩者分開調。
+        """
+        import re as _re
+        import numpy as _np
+        from great_sage.zh import tts_normalize_zh
+        text = tts_normalize_zh(text)
+        sent_gap = getattr(settings, "F5_CJK_SENTENCE_GAP", 0.3)
+        comma_gap = getattr(settings, "F5_CJK_COMMA_GAP", 0.15)
+        split_comma = getattr(settings, "F5_CJK_SPLIT_COMMA", False)
+        pattern = r"([。！？!?]|，)" if split_comma else r"([。！？!?])"
+        parts = _re.split(pattern, text)
+        pieces = []                       # (文字, 之後的停頓秒數)
+        for i in range(0, len(parts), 2):
+            body = parts[i].strip("，、 ")
+            mark = parts[i + 1] if i + 1 < len(parts) else ""
+            if not body:
+                continue
+            # 太短的片段（「告。」「主人，早安。」）黏到下一段，單獨合成開頭容易被吞掉
+            if pieces and len(_re.sub(r"[，。！？!?]", "", pieces[-1][0])) <=                     getattr(settings, "F5_CJK_MIN_PIECE_CHARS", 5):
+                prev, _ = pieces.pop()
+                body = prev + body
+            pieces.append((body + (mark if mark != "，" else "，"),
+                           comma_gap if mark == "，" else sent_gap))
+        if not pieces:
+            return self._generate_once(text)
+        chunks, rate = [], None
+        for piece, gap_s in pieces:
+            wav, rate = self._generate_once(piece)
+            wav = _np.asarray(wav, dtype=_np.float32)
+            chunks.append(wav)
+            chunks.append(_np.zeros(int(rate * gap_s), dtype=_np.float32))
+        joined = _np.concatenate(chunks[:-1])
         return _pad_tail(joined, rate), rate
 
     def _play_audio_bytes(self, data: bytes) -> None:

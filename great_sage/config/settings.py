@@ -683,6 +683,12 @@ F5_SPEED = 0.92
 # 本身念得偏慢，語速稍微調快。
 F5_NFE_STEP_CJK = 32
 F5_SPEED_CJK = 1.0          # 自動語速之外的微調倍率，>1 更快
+# 中文逐句合成、用固定靜音斷句（整段一起加速會把停頓壓扁）
+F5_CJK_PHRASE_SPLIT = True
+F5_CJK_SPLIT_COMMA = False     # True：逗號也切開（節奏更清楚，但語調較不連貫）
+F5_CJK_SENTENCE_GAP = 0.3      # 句號後停頓（秒）
+F5_CJK_COMMA_GAP = 0.15        # 逗號後停頓（秒，僅 SPLIT_COMMA 時）
+F5_CJK_MIN_PIECE_CHARS = 5     # 這個字數以內的短句併入下一句一起念
 F5_CJK_CHARS_PER_SEC = 5.0  # 中文目標語速（含標點，字/秒），引擎依參考聲音自動換算
 
 # Above this many characters, a reply is synthesized in sentence-sized
