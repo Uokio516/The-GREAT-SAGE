@@ -29,8 +29,16 @@ def _get_model():
         # 繁中化：原本是只認英文的 base.en。改成多語模型（預設 small，約
         # 460MB），中文辨識率比 base 好很多，CPU int8 跑短句仍在一兩秒內。
         # 顯存留給語音合成和 LLM，所以維持在 CPU。
-        _model = WhisperModel(settings.STT_MODEL, device="cpu",
-                              compute_type="int8")
+        # 先用本機已下載的模型，不上網檢查新版本。原本每次載入都會先連
+        # Hugging Face，網路一斷（或連線被重設）語音辨識就整個失敗，
+        # 即使模型早就在電腦裡。只有本機沒有時才下載。
+        try:
+            _model = WhisperModel(settings.STT_MODEL, device="cpu",
+                                  compute_type="int8", local_files_only=True)
+        except Exception:
+            log.info("Whisper %s not cached locally - downloading", settings.STT_MODEL)
+            _model = WhisperModel(settings.STT_MODEL, device="cpu",
+                                  compute_type="int8")
     return _model
 
 

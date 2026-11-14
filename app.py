@@ -66,6 +66,28 @@ def _configure_logging() -> None:
     )
 
 
+_INSTANCE_MUTEX = None
+
+
+def _claim_single_instance() -> bool:
+    """只允許同時開一個大賢者。
+
+    啟動到視窗出現要十幾秒，看起來像沒反應就容易多點幾次；多個大賢者會互搶
+    Alt+1 快捷鍵、麥克風和 8765 連接埠，結果誰都不正常。用 Windows 具名
+    mutex 判斷：已經有人持有就回傳 False。
+    """
+    global _INSTANCE_MUTEX
+    if sys.platform != "win32":
+        return True
+    try:
+        import ctypes
+        kernel32 = ctypes.windll.kernel32
+        _INSTANCE_MUTEX = kernel32.CreateMutexW(None, False, r"Local\GreatSageSingleInstance")
+        return kernel32.GetLastError() != 183          # ERROR_ALREADY_EXISTS
+    except Exception:
+        return True
+
+
 def main() -> int:
     # The transparent overlay runs as its own process, and in a frozen
     # build there is no overlay_window.py to launch - so the exe re-invokes
@@ -77,6 +99,16 @@ def main() -> int:
         return overlay_window.main()
 
     _configure_logging()
+    if not _claim_single_instance():
+        log.warning("Great Sage is already running - this launch exits.")
+        try:
+            import ctypes
+            ctypes.windll.user32.MessageBoxW(
+                None, "大賢者已經在執行中了。\n\n啟動要十幾秒，請等視窗出現，不用重複點。",
+                "大賢者", 0x40)
+        except Exception:
+            pass
+        return 0
     log.info("Great Sage starting (frozen=%s, base=%s)",
              getattr(sys, "frozen", False), BASE)
 
