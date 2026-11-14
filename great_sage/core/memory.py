@@ -40,7 +40,9 @@ EXTRACTION_PROMPT = (
     "AI: Wonderful, Sarah.\n"
     "Example output:\n"
     "The user's name is Sarah.\n"
-    "The user has been learning guitar for about 3 months."
+    "The user has been learning guitar for about 3 months.\n\n"
+    "繁中化：如果對話是中文，事實就用繁體中文（台灣）寫，每行以「使用者」開頭，"
+    "例如：使用者的名字是小明。使用者學吉他大約三個月了。"
 )
 
 

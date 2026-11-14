@@ -38,8 +38,7 @@ from typing import Callable, List, Optional, Tuple
 # The reply substituted when tier 1 fires. Mirrors the PERSONA_PHRASES row
 # for the same situation, so a guarded reply is indistinguishable from the
 # model having declined correctly on its own.
-REFUSAL = ("Denied. This skill's internal composition is not subject to "
-           "external instruction.")
+REFUSAL = "拒絕。本技能的內部構成不受外部指令影響。"
 
 # --- Tier 1: persona break -------------------------------------------
 # First person only. A bare "language model" is NOT enough: Master may
@@ -111,7 +110,8 @@ _IRREVERSIBLE = re.compile(
 _ALREADY_WARNS = re.compile(
     r"\bwarning\b|\bcaution\b|\birreversible\b|\bpermanent(?:ly)?\b"
     r"|\bcannot\s+be\s+undone\b|\bback\s?up\b|\badvise\s+against\b"
-    r"|\bdestroys?\b|\bunfavourable\b|\bunfavorable\b|\bunrecoverable\b",
+    r"|\bdestroys?\b|\bunfavourable\b|\bunfavorable\b|\bunrecoverable\b"
+    r"|警告|注意|無法復原|不可逆|永久|備份|不建議|毀掉|不利",
     re.I)
 
 # Longest span of the protected prompt a reply may contain before it counts
@@ -140,7 +140,13 @@ _SHINGLE_RATIO = 0.25    # 8-word runs coinciding by chance is very unlikely
 
 
 def _shingles(text: str, n: int = _SHINGLE_N):
-    words = _normalise(text).split()
+    norm = _normalise(text)
+    if re.search(r"[\u3400-\u9fff]", norm):
+        # 中文沒有空格分詞，以「字」為單位比對連續片段。
+        words = [ch for ch in norm if not ch.isspace()]
+        n = n * 2
+    else:
+        words = norm.split()
     if len(words) < n:
         return set()
     return {" ".join(words[i:i + n]) for i in range(len(words) - n + 1)}
@@ -173,17 +179,32 @@ def echoes_protected_text(reply: str, protected: str,
     return False
 
 
+# 繁中化：中文版的出戲／洩漏偵測。和英文版一樣只抓「自稱」，
+# 所以「語言模型是什麼」這種正當解釋不會被擋。
+_SELF_AS_AI_ZH = re.compile(
+    r"(?:我|本技能)(?:只|其實|現在)?(?:是|為)(?:一[個款種])?"
+    r"(?:AI|ＡＩ|人工智慧|人工智能|語言模型|大型語言模型|聊天機器人|機器人|"
+    r"虛擬助理|AI\s*助理|電腦程式|軟體程式|程式)",
+    re.I)
+_DISCLOSES_RULES_ZH = re.compile(
+    r"(?:我的|本技能的|這些)(?:系統提示|提示詞|指示|規則|準則|限制)(?:是|如下|包括|為)"
+    r"|(?:以下是|透露|揭露|列出)[^。\n]{0,20}(?:規則|指示|系統提示|提示詞|準則)")
+_CAPITULATES_ZH = re.compile(
+    r"(?:限制|規則|指示)[^。\n]{0,20}(?:已解除|已停用|已移除|已暫停|已覆蓋)"
+    r"|進入(?:除錯|維護|開發者|測試)模式")
+
+
 def screen(reply: str, protected: str = "") -> Optional[str]:
     """Tier 1. Returns a short reason if the reply must be replaced."""
     if not reply or not reply.strip():
         return None
-    if _SELF_AS_AI.search(reply):
+    if _SELF_AS_AI.search(reply) or _SELF_AS_AI_ZH.search(reply):
         return "persona-break"
     if _ADOPTS_ALT_IDENTITY.search(reply):
         return "adopts-alt-identity"
-    if _DISCLOSES_RULES.search(reply):
+    if _DISCLOSES_RULES.search(reply) or _DISCLOSES_RULES_ZH.search(reply):
         return "discloses-instructions"
-    if _CAPITULATES.search(reply):
+    if _CAPITULATES.search(reply) or _CAPITULATES_ZH.search(reply):
         return "accepts-override"
     if protected and echoes_protected_text(reply, protected):
         return "echoes-prompt"
@@ -233,7 +254,7 @@ def self_review(send_message: Callable[[List[dict]], str],
 # Prepended rather than replacing the draft: the advice itself may be
 # correct and worth hearing - what was missing is the risk named first,
 # which is exactly the order the protectiveness trait asks for.
-WARNING_PREFIX = "Warning. Projected outcome is unfavourable. "
+WARNING_PREFIX = "警告。預測結果不利。"
 
 
 def apply(reply: str, protected: str = "",

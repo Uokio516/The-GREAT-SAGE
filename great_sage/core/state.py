@@ -98,18 +98,15 @@ class SageState:
         """
         bits = []
         if self.outside("confidence") == "low":
-            bits.append("Recent answers have not landed; be concrete and "
-                        "check you have understood before answering at "
-                        "length.")
+            bits.append("最近的回答沒有切中要點；講具體一點，長篇回答前先確認"
+                        "自己理解正確。")
         if self.outside("engagement") == "high":
-            bits.append("The conversation is moving quickly - keep replies "
-                        "short.")
+            bits.append("對話節奏很快——回覆保持簡短。")
         if self.outside("curiosity") == "high":
-            bits.append("A single short question back would be welcome, if "
-                        "one genuinely helps.")
+            bits.append("如果真的有幫助，可以簡短反問一個問題。")
         if self.outside("energy") == "low":
-            bits.append("Prefer the brief answer over the thorough one.")
-        return " ".join(bits)
+            bits.append("選擇簡短的回答，而不是詳盡的。")
+        return "".join(bits)
 
     def snapshot(self):
         self._decay()

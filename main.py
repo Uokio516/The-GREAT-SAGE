@@ -44,29 +44,21 @@ def format_persona_phrases() -> str:
     phrases = getattr(settings, "PERSONA_PHRASES", None)
     if not phrases:
         return ""
-    table = "\n".join(f'- When {situation}: "{line}"' for situation, line in phrases)
+    table = "\n".join(f'- 當{situation}：「{line}」' for situation, line in phrases)
     return (
-        "\n\nPREFERRED PHRASING. In these situations OPEN with the "
-        "given line near-verbatim - it is how this skill speaks, and it "
-        "overrides any habit of explaining yourself in other terms - "
-        "then CONTINUE with the actual substance: the reason, the "
-        "evidence, or the better course of action. The line is the "
-        "opening of a useful reply, never a replacement for one. "
-        "(Exception: where the line is itself the complete answer, such "
-        "as a one-word fact, stopping there is correct.)\n\n"
-        "Two examples of the required shape - note that the "
-        "declaration opens the reply and the substance follows it:\n"
-        "User: I am going to delete my whole database to fix a typo.\n"
-        "You: Warning. Projected outcome is unfavourable. A typo is a "
-        "single-field edit; dropping the database destroys every other "
-        "record with it. Correct the field in place, and take a backup "
-        "before touching it.\n"
-        "User: Is the Earth flat?\n"
-        "You: Notice. That premise is in error. The curvature is "
-        "directly measurable - a ship's hull vanishes below the "
-        "horizon before its mast does, and visible distance scales "
-        "with observer height.\n\n"
-        "The situation table:\n"
+        "\n\n建議用語。遇到以下情況時，開頭幾乎照抄指定的句子——這是本技能說話的"
+        "方式，優先於任何用其他說法解釋自己的習慣——接著一定要講實質內容：原因、"
+        "證據，或更好的做法。這句話是有用回覆的開頭，絕不是回覆的替代品。"
+        "（例外：如果這句話本身就是完整答案，例如一個詞就能回答的事實，到此為止"
+        "是正確的。）\n\n"
+        "兩個正確格式的範例——注意宣告放在開頭，實質內容接在後面：\n"
+        "使用者：我要把整個資料庫刪掉來修一個錯字。\n"
+        "你：警告。預測結果不利。錯字只是改一個欄位；刪掉資料庫會連其他所有紀錄"
+        "一起毀掉。直接修正那個欄位，動手之前先備份。\n"
+        "使用者：地球是平的嗎？\n"
+        "你：告。該前提有誤。地球的曲率可以直接量測——船隻遠去時，船身會比桅杆"
+        "先消失在地平線下，而能看到的距離也會隨觀察者的高度增加。\n\n"
+        "情況對照表：\n"
         + table
     )
 

@@ -360,7 +360,8 @@ def _summarise_chat(provider, title, messages):
         "Topic: <five words or fewer>\n"
         "Summary: <two sentences: the main point, any decision reached, "
         "and anything left unresolved>\n"
-        "Do not copy the conversation back. Do not add commentary.\n\n"
+        "Do not copy the conversation back. Do not add commentary.\n"
+        "繁中化：全部用繁體中文（台灣）寫，兩行分別以「主題：」和「摘要：」開頭。\n\n"
         + body)
     return provider.send_message([{"role": "user", "content": prompt}]).strip()
 
@@ -474,7 +475,9 @@ def _suggest_title(provider, messages):
         "Two to four words. Title Case. No quotes, no punctuation, no "
         "explanation - reply with the title and nothing else." + NL +
         "Examples: Clevatess Sound Design, TTS Troubleshooting, "
-        "AI Model Research." + NL + NL + body)
+        "AI Model Research." + NL +
+        "繁中化：如果對話是中文，就用繁體中文（台灣）取 4 到 10 個字的標題，"
+        "例如：音效設計討論、語音合成除錯。" + NL + NL + body)
     try:
         out = provider.send_message([{"role": "user", "content": prompt}])
     except Exception:
@@ -500,7 +503,8 @@ def _chat_takeaway(provider, title, messages):
         "long-term about Master - preferences, decisions, how they work, "
         "ongoing projects. Reply with one to three short lines, each a "
         "single fact, no bullets or numbering. If there is nothing worth "
-        "keeping, reply with exactly: NOTHING\n\n" + body)
+        "keeping, reply with exactly: NOTHING\n"
+        "繁中化：事實用繁體中文（台灣）寫。\n\n" + body)
     out = provider.send_message([{"role": "user", "content": prompt}]).strip()
     return None if out.upper().startswith("NOTHING") else out
 
@@ -603,7 +607,9 @@ def _handle_chat(text, engine, voice, sink, websocket, loop,
         # matching "no" anywhere would fire on every sentence containing
         # the word.
         low = (text or "").strip().lower()
-        if low.startswith(("no,", "no ", "nope", "wrong", "that's wrong",
+        if low.startswith(("不是", "不對", "錯了", "你錯了", "我是說", "我的意思是",
+                           "不是這個", "其實",
+                           "no,", "no ", "nope", "wrong", "that's wrong",
                            "thats wrong", "i meant", "i mean ", "not that",
                            "actually,")):
             sage_state.on_correction(st)
@@ -1468,7 +1474,7 @@ async def run_server(engine, voice) -> None:
                         try:
                             if kind == "summarize_chat":
                                 out = _summarise_chat(engine.provider, title, msgs)
-                                note = out or "Nothing to summarise yet."
+                                note = out or "目前還沒有可以摘要的內容。"
                             else:
                                 out = _chat_takeaway(engine.provider, title, msgs)
                                 if out:
@@ -1476,12 +1482,12 @@ async def run_server(engine, voice) -> None:
                                         settings.MEMORY_FILE_PATH,
                                         [l.strip() for l in out.splitlines() if l.strip()],
                                         settings.MEMORY_MAX_FACTS)
-                                    note = "Remembered:\n" + out
+                                    note = "已記住：\n" + out
                                 else:
-                                    note = "Nothing here was worth keeping."
+                                    note = "這段對話沒有需要記住的內容。"
                         except Exception as exc:
                             log.exception("%s failed", kind)
-                            note = f"Could not complete that: {exc}"
+                            note = f"無法完成：{exc}"
                         payload_out = json.dumps({
                             "type": "chat_action_result", "action": kind,
                             "id": payload.get("id"), "text": note})

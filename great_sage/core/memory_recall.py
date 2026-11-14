@@ -73,9 +73,22 @@ def _stem(word: str) -> str:
     return word
 
 
+_CJK_RUN = __import__("re").compile(r"[\u3400-\u9fff]+")
+
+
 def tokens(text: str) -> set:
-    """Lowercased, stemmed content words with stopwords removed."""
+    """Lowercased, stemmed content words with stopwords removed.
+
+    繁中化：中文沒有空格，整句會被當成一個「字」而永遠比對不到。中文部分
+    改用相鄰兩字（bigram）當關鍵詞，例如「喜歡咖啡」→ 喜歡、歡咖、咖啡。
+    """
     out = set()
+    for run in _CJK_RUN.findall(text or ""):
+        if len(run) == 1:
+            continue
+        for i in range(len(run) - 1):
+            out.add(run[i:i + 2])
+    text = _CJK_RUN.sub(" ", text or "")
     for raw in text.lower().split():
         word = "".join(ch for ch in raw if ch.isalnum())
         if len(word) > 2 and word not in _STOPWORDS:
@@ -139,10 +152,9 @@ def format_recall(facts: List[str]) -> str:
         return ""
     lines = "\n".join("- " + fact for fact in facts)
     return (
-        "Relevant to this message, from what you remember about Master:\n"
+        "與這則訊息相關、你記得的主人資訊：\n"
         + lines
-        + "\nUse these only where they actually apply, and never invent "
-        "anything beyond them."
+        + "\n只在真的適用時使用，絕不捏造超出這些內容的事。"
     )
 
 
@@ -151,6 +163,8 @@ def format_recall(facts: List[str]) -> str:
 # to call mum" mid-sentence does not trigger a store.
 
 _REMEMBER_PREFIXES = (
+    "幫我記住", "幫我記一下", "請記住", "記住這件事", "記住", "記一下", "筆記一下",
+    "不要忘記", "別忘了",
     "remember this that", "remember this,", "remember this:", "remember this",
     "remember that", "remember,", "remember:", "remember ",
     "make a note that", "make a note", "note that",
@@ -159,6 +173,7 @@ _REMEMBER_PREFIXES = (
 )
 
 _FORGET_PREFIXES = (
+    "幫我忘掉", "忘掉", "忘記", "刪除記憶",
     "forget that", "forget about", "forget ",
 )
 
@@ -191,7 +206,9 @@ CONDENSE_PROMPT = (
     "remembering. Strip filler, politeness, and anything transient. "
     "Output that single sentence and nothing else.\n\n"
     "Example input: remember that I always use Reaper when I'm doing sound design\n"
-    "Example output: The user uses Reaper for sound design."
+    "Example output: The user uses Reaper for sound design.\n\n"
+    "繁中化：如果使用者說的是中文，就用繁體中文（台灣）寫，並以「使用者」開頭，"
+    "例如：使用者做音效時都用 Reaper。"
 )
 
 
