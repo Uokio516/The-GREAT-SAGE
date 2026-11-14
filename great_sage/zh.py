@@ -133,7 +133,7 @@ def tts_normalize_zh(text: str) -> str:
     t = _RANGE_RE.sub(lambda m: _num_zh(m.group(1)) + "到" + _num_zh(m.group(2)), t)
     t = _NUM_RE.sub(lambda m: _num_zh(m.group(0)), t)
     t = _DROP_RE.sub("", t)
-    t = t.replace("、", "").replace("﹑", "")
+    t = t.replace("、", "，").replace("﹑", "，")   # 頓號當逗號，念到時停一下
     t = re.sub(r"[：；]", "，", t)
     t = re.sub(r"……|…|——|—", "，", t)
     t = re.sub(r"\s+", "", t) if CJK_RE.search(t) and not re.search(r"[A-Za-z] [A-Za-z]", t) else t
