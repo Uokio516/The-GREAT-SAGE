@@ -24,6 +24,13 @@ if getattr(sys, "frozen", False):
     BASE = getattr(sys, "_MEIPASS", BASE)
 sys.path.insert(0, BASE)
 
+# 繁中化：台灣版 Windows 的預設編碼是 cp950，沒指定 encoding 的 open()、
+# 子程序輸出、print 都會用它，遇到 UTF-8 或 cp950 以外的字就變亂碼或直接崩潰。
+# 這裡讓之後啟動的子程序（浮窗、log 視窗）一律走 UTF-8 模式；本程序則由
+# 啟動捷徑的 -X utf8 處理。
+os.environ.setdefault("PYTHONUTF8", "1")
+os.environ.setdefault("PYTHONIOENCODING", "utf-8")
+
 # Relative paths in settings.py (the reference clip, voice_lines, the saved
 # HUD settings) are resolved against the working directory, which is
 # wherever the user launched the exe from - not where the app lives.

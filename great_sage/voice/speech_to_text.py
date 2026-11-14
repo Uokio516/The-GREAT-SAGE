@@ -14,6 +14,9 @@ import logging
 
 import numpy as np
 
+from great_sage.config import settings
+from great_sage.zh import to_tw
+
 log = logging.getLogger(__name__)
 
 _model = None
@@ -23,9 +26,11 @@ def _get_model():
     global _model
     if _model is None:
         from faster_whisper import WhisperModel
-        # base.en: English-only, ~145MB, good accuracy/speed balance on
-        # CPU for short utterances. int8 compute keeps it fast without a GPU.
-        _model = WhisperModel("base.en", device="cpu", compute_type="int8")
+        # 繁中化：原本是只認英文的 base.en。改成多語模型（預設 small，約
+        # 460MB），中文辨識率比 base 好很多，CPU int8 跑短句仍在一兩秒內。
+        # 顯存留給語音合成和 LLM，所以維持在 CPU。
+        _model = WhisperModel(settings.STT_MODEL, device="cpu",
+                              compute_type="int8")
     return _model
 
 
@@ -36,8 +41,11 @@ def transcribe(audio: np.ndarray) -> str:
         log.warning("Transcription skipped: empty recording")
         return ""
     model = _get_model()
-    segments, _ = model.transcribe(audio, language="en", vad_filter=True)
-    text = "".join(seg.text for seg in segments).strip()
+    segments, _ = model.transcribe(
+        audio, language=settings.STT_LANGUAGE, vad_filter=True,
+        # 用繁體的提示句把 Whisper 往繁體拉；漏掉的簡體再由 to_tw 補轉。
+        initial_prompt=settings.STT_INITIAL_PROMPT or None)
+    text = to_tw("".join(seg.text for seg in segments).strip())
 
     # An empty result used to be completely silent: faster_whisper logged
     # that it processed the audio, this returned "", and the caller simply

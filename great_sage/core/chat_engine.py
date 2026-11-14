@@ -5,6 +5,7 @@ no matter which AI backend is plugged in.
 """
 
 import time
+from great_sage.zh import to_tw
 from typing import Callable, Iterator, List, Optional
 
 from great_sage.models.base import Message, ModelProvider, ModelProviderError
@@ -123,7 +124,7 @@ class ChatEngine:
         """Send a message, get the full reply back, and record both in history."""
         outgoing = self._build_outgoing(user_input)
         try:
-            reply = self.provider.send_message(outgoing)
+            reply = to_tw(self.provider.send_message(outgoing))
         except ModelProviderError:
             # Don't leave an unanswered user turn in history on failure.
             self.history.pop()
@@ -137,6 +138,7 @@ class ChatEngine:
         collected = []
         try:
             for chunk in self.provider.stream_response(outgoing):
+                chunk = to_tw(chunk)   # 簡體一律轉台灣繁體
                 collected.append(chunk)
                 yield chunk
         except ModelProviderError:
@@ -227,7 +229,7 @@ class ChatEngine:
                 message = self.provider.chat_raw(outgoing, tools=tools_schema)
                 calls = message.get("tool_calls") or []
                 if not calls:
-                    reply = message.get("content") or ""
+                    reply = to_tw(message.get("content") or "")
                     self.history.append({"role": "assistant", "content": reply})
                     return reply, used
                 # Record the assistant turn that requested the calls, or
@@ -261,7 +263,7 @@ class ChatEngine:
                                              "images": list(shot)})
             # Out of rounds: answer with what the tools returned rather
             # than looping forever.
-            reply = message.get("content") or ""
+            reply = to_tw(message.get("content") or "")
             self.history.append({"role": "assistant", "content": reply})
             return reply, used
         except ModelProviderError:

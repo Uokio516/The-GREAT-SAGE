@@ -64,7 +64,20 @@ FIRST_CHUNK_MIN_CHARS = 25
 CHUNK_MIN_CHARS = 80
 MAX_CHUNK_CHARS = 240
 
-_SENTENCE_END = ".!?"
+_SENTENCE_END = ".!?。！？"
+# 中文全形句末標點後面不會接空格，看到就能直接斷句，不必等下一個字。
+_CJK_SENTENCE_END = "。！？"
+# 中文沒有空格可以當斷點，超長時改在這些標點後面切。
+_CJK_SOFT_BREAK = "，、；："
+
+
+def _soft_cut(text: str, limit: int) -> int:
+    """在 limit 之前找一個可以切的位置：英文找空格，中文找逗號類標點。"""
+    cut = text.rfind(" ", 0, limit)
+    if cut > 0:
+        return cut
+    best = max(text.rfind(p, 0, limit) for p in _CJK_SOFT_BREAK)
+    return best + 1 if best > 0 else -1
 
 
 def split_into_chunks(text: str) -> List[str]:
@@ -81,7 +94,8 @@ def split_into_chunks(text: str) -> List[str]:
     sentences: List[str] = []
     start = 0
     for i, ch in enumerate(text):
-        if ch in _SENTENCE_END and (i + 1 == len(text) or text[i + 1].isspace()):
+        if ch in _SENTENCE_END and (i + 1 == len(text) or text[i + 1].isspace()
+                                    or ch in _CJK_SENTENCE_END):
             sentences.append(text[start : i + 1].strip())
             start = i + 1
     tail = text[start:].strip()
@@ -91,7 +105,8 @@ def split_into_chunks(text: str) -> List[str]:
     chunks: List[str] = []
     pending = ""
     for sentence in sentences:
-        pending = f"{pending} {sentence}".strip() if pending else sentence
+        sep = "" if _is_cjk_text(sentence) else " "
+        pending = f"{pending}{sep}{sentence}".strip() if pending else sentence
         threshold = FIRST_CHUNK_MIN_CHARS if not chunks else CHUNK_MIN_CHARS
         if len(pending) >= threshold:
             chunks.append(pending)
@@ -101,14 +116,15 @@ def split_into_chunks(text: str) -> List[str]:
         # perfectly speakable alone and starts sooner, so only a genuinely
         # tiny fragment gets folded back into the previous chunk.
         if chunks and len(pending) < FIRST_CHUNK_MIN_CHARS:
-            chunks[-1] = f"{chunks[-1]} {pending}".strip()
+            sep = "" if _is_cjk_text(pending) else " "
+            chunks[-1] = f"{chunks[-1]}{sep}{pending}".strip()
         else:
             chunks.append(pending)
 
     bounded: List[str] = []
     for chunk in chunks:
         while len(chunk) > MAX_CHUNK_CHARS:
-            cut = chunk.rfind(" ", 0, MAX_CHUNK_CHARS)
+            cut = _soft_cut(chunk, MAX_CHUNK_CHARS)
             if cut <= 0:
                 break
             bounded.append(chunk[:cut].strip())
@@ -142,6 +158,10 @@ def take_chunk(buffer: str, is_first: bool, final: bool = False):
         if ch not in _SENTENCE_END:
             continue
         at_end = i + 1 == len(text)
+        if ch in _CJK_SENTENCE_END:
+            if i + 1 >= threshold:      # 全形句號沒有歧義，直接斷
+                return text[: i + 1].strip(), text[i + 1 :]
+            continue
         if at_end and not final:
             break  # ambiguous until the next delta arrives
         if not at_end and not text[i + 1].isspace():
@@ -159,7 +179,7 @@ def take_chunk(buffer: str, is_first: bool, final: bool = False):
     # No usable sentence end. Emit anyway once the buffer is long enough
     # that waiting would delay speech more than an imperfect split costs.
     if len(text) >= MAX_CHUNK_CHARS:
-        cut = text.rfind(" ", 0, MAX_CHUNK_CHARS)
+        cut = _soft_cut(text, MAX_CHUNK_CHARS)
         if cut > 0:
             return text[:cut].strip(), text[cut:]
     if final:
@@ -182,6 +202,16 @@ def _describe_cause_chain(exc, limit=6):
     return " <- ".join(parts)
 
 
+def _is_cjk_text(text: str) -> bool:
+    from great_sage.zh import has_cjk
+    return has_cjk(text)
+
+
+# 中文每個字念起來比英文字母久很多（F5 中文約每秒 4～5 字、英文約 17 字元），
+# 同樣的字數門檻套在中文上會讓一次合成的句子長到被壓縮成含糊的快嘴。
+_CJK_CHAR_WEIGHT = 3.5
+
+
 def _split_for_speech(text: str, target: int):
     """Break text at sentence ends into pieces of roughly `target` chars.
 
@@ -190,16 +220,18 @@ def _split_for_speech(text: str, target: int):
     and a sentence that starts mid-thought lands wrong.
     """
     import re
-    sentences = re.split(r"(?<=[.!?])\s+", (text or "").strip())
+    sentences = re.split(r"(?<=[.!?])\s+|(?<=[。！？])", (text or "").strip())
     out, current = [], ""
     for sentence in sentences:
         if not sentence:
             continue
-        if current and len(current) + 1 + len(sentence) > target:
+        # 中文句子之間不加空格，英文才加。
+        joiner = "" if _is_cjk_text(current + sentence) else " "
+        if current and len(current) + len(joiner) + len(sentence) > target:
             out.append(current)
-            current = sentence
+            current = sentence.strip()
         else:
-            current = (current + " " + sentence).strip()
+            current = (current + joiner + sentence).strip()
     if current:
         out.append(current)
     return out or [text]
@@ -405,8 +437,11 @@ class F5TTSVoiceOutput(VoiceOutput):
         """
         import numpy as _np
         threshold = getattr(settings, "F5_CHUNK_THRESHOLD_CHARS", 260)
-        pieces = (_split_for_speech(text,
-                                    getattr(settings, "F5_CHUNK_TARGET_CHARS", 220))
+        target = getattr(settings, "F5_CHUNK_TARGET_CHARS", 220)
+        if _is_cjk_text(text):
+            threshold = int(threshold / _CJK_CHAR_WEIGHT)
+            target = int(target / _CJK_CHAR_WEIGHT)
+        pieces = (_split_for_speech(text, target)
                   if len(text) > threshold else [text])
         if len(pieces) == 1:
             wav, rate = self._generate_once(pieces[0])
@@ -478,6 +513,10 @@ class F5TTSVoiceOutput(VoiceOutput):
         # a boundary, and no second audio element to race over.
         if self._single_shot:
             spoken = " ".join(text.split())
+            if _is_cjk_text(spoken):
+                # 中文不靠空格分詞，換行被併成的空格念出來只會變成奇怪的停頓。
+                import re as _re
+                spoken = _re.sub(r"(?<=[^\x00-\x7f]) (?=[^\x00-\x7f])", "", spoken)
             if not spoken:
                 return
             samples, rate = self.generate(spoken)

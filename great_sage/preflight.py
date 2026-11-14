@@ -51,6 +51,7 @@ def _run(cmd, timeout=10):
     """Run a command, returning (rc, stdout). Never raises."""
     try:
         p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout,
+                           encoding="utf-8", errors="replace",
                            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         return p.returncode, (p.stdout or "") + (p.stderr or "")
     except Exception as exc:

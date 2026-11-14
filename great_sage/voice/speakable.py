@@ -70,6 +70,8 @@ _HRULE = re.compile(r"^[ \t]*(?:-{3,}|={3,}|\*{3,})[ \t]*$", re.M)
 # the full text still reaches the screen and the transcript, so nothing is
 # actually lost, it just is not read aloud.
 SPEECH_HARD_CAP_CHARS = 420           # ~30 seconds of audio
+SPEECH_HARD_CAP_CHARS_CJK = 130       # 中文約 30 秒
+_CJK = re.compile(r"[㐀-鿿]")
 
 # Below this, cutting at a sentence boundary would throw away too much, so
 # fall back to a word boundary instead.
@@ -84,14 +86,20 @@ def cap_for_speech(text: str, limit: int = SPEECH_HARD_CAP_CHARS) -> str:
     the allowance. Only the SPOKEN copy is trimmed - the full text still
     reaches the screen and the transcript.
     """
+    if text and _CJK.search(text) and limit == SPEECH_HARD_CAP_CHARS:
+        # 中文念得慢：同樣 30 秒左右只念得完約 130 個字。
+        limit = SPEECH_HARD_CAP_CHARS_CJK
     if not text or len(text) <= limit:
         return text
     head = text[:limit]
     cut = max(head.rfind(". "), head.rfind("! "), head.rfind("? "),
-              head.rfind(".\n"), head.rfind("!\n"), head.rfind("?\n"))
+              head.rfind(".\n"), head.rfind("!\n"), head.rfind("?\n"),
+              head.rfind("。"), head.rfind("！"), head.rfind("？"))
     if cut >= limit * _CAP_SENTENCE_FLOOR:
         return head[:cut + 1].rstrip()
-    space = head.rfind(" ")
+    space = max(head.rfind(" "), head.rfind("，"), head.rfind("、"))
+    if _CJK.search(head):
+        return (head[:space] if space > 0 else head).rstrip("，、 ") + "。"
     return (head[:space] if space > 0 else head).rstrip() + "."
 
 
@@ -106,7 +114,9 @@ def _end_sentence(line: str) -> str:
     stripped = line.rstrip()
     if not stripped:
         return line
-    return line if stripped[-1] in ".!?:;," else stripped + "."
+    if stripped[-1] in ".!?:;,。！？：；，、":
+        return line
+    return stripped + ("。" if _CJK.search(stripped) else ".")
 
 
 def speakable(text: str) -> str:

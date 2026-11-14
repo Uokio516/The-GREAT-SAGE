@@ -660,6 +660,17 @@ VOICE_SINGLE_SHOT = True
 # "ja" (and CLONE_TRANSLATE back to True) once Build Tools are installed.
 CLONE_LANGUAGE = "en"
 
+# --- 繁體中文化 -----------------------------------------------------------
+# 介面、回覆、語音辨識一律用繁體中文（台灣）。
+UI_LANGUAGE = "zh-TW"
+
+# 語音辨識（faster-whisper）。STT_LANGUAGE 設 None 會自動偵測語言，但短句
+# 很容易誤判成日文或英文，所以固定中文；中英夾雜（「打開 Spotify」）照樣
+# 辨識得出來。模型可選 base / small / medium，越大越準也越慢。
+STT_MODEL = os.environ.get("GREAT_SAGE_STT_MODEL", "small")
+STT_LANGUAGE = "zh"
+STT_INITIAL_PROMPT = "以下是台灣人說的繁體中文，可能夾雜英文，例如：打開 YouTube、搜尋天氣、現在幾點。"
+
 # Translate each reply into CLONE_LANGUAGE using the same model provider,
 # immediately before speaking it - lets on-screen text stay in whatever
 # language SYSTEM_PROMPT uses while the voice speaks a different one.
