@@ -393,6 +393,16 @@ _TRIGGERS = (
     "running", "what's open", "whats open", "apps", "programs", "windows",
     "folder", "directory", "file", "downloads", "desktop", "documents",
     "youtube", "google", "browser", "website", "url", "link", ".com",
+    # 繁中化：中文的觸發詞
+    "幾點", "時間", "日期", "幾號", "星期", "禮拜", "今天",
+    "螢幕", "畫面", "顯存", "記憶體", "硬碟", "磁碟", "空間", "容量",
+    "打開", "開啟", "啟動", "執行", "開一下", "播放", "播", "看一下",
+    "搜尋", "搜索", "查一下", "查查", "幫我查", "上網", "網路", "谷歌", "估狗",
+    "新聞", "天氣", "價格", "股價", "比分",
+    "資料夾", "檔案", "下載", "桌面", "文件",
+    "提醒", "行程", "排程", "任務",
+    "視窗", "程式", "應用程式", "在用什麼",
+    "影片", "網站", "網址", "連結", "油管",
 )
 
 
@@ -756,7 +766,136 @@ _PREROUTE = (
     (_re.compile(r"\b(?:open|launch|start)\s+(?:up\s+)?(?:my |the )?"
                  r"(?P<t>[A-Za-z0-9 ._-]{2,60})$", _re.I),
      "__open_something", lambda m: _open_something_args(m)),
+
+    # ---- 繁中化：中文指令 ----
+    (_re.compile(r"現在幾點|幾點了|現在時間|今天(?:是)?幾月幾號|今天幾號|"
+                 r"今天(?:是)?(?:星期|禮拜)幾|今天(?:是)?什麼日子|今天日期"),
+     "get_time", {}),
+    (_re.compile(r"(?:顯存|VRAM|vram|記憶體|硬碟|磁碟|儲存)(?:空間)?"
+                 r"(?:還)?(?:剩|有|夠)(?:下)?(?:多少|幾)|"
+                 r"(?:檢查|查一下|看一下)(?:我的)?(?:顯存|VRAM|vram|記憶體|硬碟|磁碟)"),
+     "get_system_status", {}),
+    (_re.compile(r"我(?:現在|目前)?(?:正)?在用(?:什麼|哪個)|"
+                 r"(?:現在|目前)(?:是|在)?(?:哪個|什麼)(?:視窗|程式|應用程式)"),
+     "get_focused_window", {}),
+    (_re.compile(r"(?:看|看看|看一下|幫我看)(?:一下)?(?:我的)?(?:螢幕|畫面)|"
+                 r"(?:螢幕|畫面)上(?:有|是|在)什麼|你(?:有)?看到(?:了)?什麼"),
+     "look_at_screen", {}),
+    (_re.compile(r"我?(?:有|還有)(?:什麼|哪些)(?:提醒|行程|排程|待辦)|"
+                 r"(?:列出|顯示|看一下)(?:我的)?(?:提醒|任務|行程|排程)"),
+     "list_tasks", {}),
+    (_re.compile(r"(?:上網|網路上|網上)?(?:幫我)?(?:搜尋|搜索|查一下|查查|幫我查|上網查|"
+                 r"[Gg]oogle|谷歌|估狗)(?:一下)?(?:看看)?[，,：: ]*(?P<q>.{2,200})"),
+     "web_search", lambda m: _search_args_zh(m)),
+    (_re.compile(r"[Yy][Oo][Uu][Tt][Uu][Bb][Ee]|油管|(?<![A-Za-z])[Yy][Tt](?![A-Za-z])"),
+     "open_youtube", lambda m: _youtube_args_zh(m)),
+    (_re.compile(r"^(?:可以|能不能|能|請|麻煩)?(?:你)?(?:幫我)?"
+                 r"(?P<v>打開|開啟|啟動|開一下|執行|開(?!始|心|玩笑|會|車|門|燈))(?:一下)?\s*(?:我的)?"
+                 r"(?P<t>.{1,40}?)(?:一下)?(?:好嗎|嗎|吧)?[。！!？?]*$"),
+     "__open_something", lambda m: _open_something_args_zh(m)),
 )
+
+
+# ---------------------------------------------------------------------
+# 繁中化：中文指令的參數擷取
+# ---------------------------------------------------------------------
+
+def _is_zh(text):
+    return bool(_re.search(r"[\u3400-\u9fff]", text or ""))
+
+
+# 本機的東西，不該丟給網路搜尋。
+_LOCAL_NOT_WEB_ZH = ("檔案", "資料夾", "電腦裡", "電腦上", "桌面", "下載", "硬碟")
+_YT_WORD = _re.compile(r"[Yy][Oo][Uu][Tt][Uu][Bb][Ee]|油管|(?<![A-Za-z])[Yy][Tt](?![A-Za-z])")
+
+
+def _search_args_zh(m):
+    whole = m.string or ""
+    if not _is_zh(whole) or _YT_WORD.search(whole):
+        return None          # 英文交給英文規則；YouTube 交給 YouTube 規則
+    q = (m.group("q") or "").strip().strip("。！？?!，, ")
+    q = _re.sub(r"(?:給我看|給我|好嗎|嗎|吧)$", "", q).strip()
+    if len(q) < 2 or any(w in q for w in _LOCAL_NOT_WEB_ZH):
+        return None
+    return {"query": q}
+
+
+# 問「關於」YouTube 的事，不是要用 YouTube。
+_YT_NOT_A_REQUEST_ZH = ("掛了", "壞了", "是什麼", "是誰的", "怎麼用", "連不上", "打不開")
+
+# 「然後點第一個影片」這種後續指示。
+_YT_FIRST_ZH = _re.compile(
+    r"(?:點|播|播放|開|打開|選|按)(?:開)?(?:一下)?第一(?:個|部|支|則|條)?|"
+    r"第一(?:個|部|支|則|條)(?:影片|結果|搜尋結果)")
+_YT_TAIL_ZH = _re.compile(
+    r"[，, ]*(?:然後|並且|並|再|接著|之後)?(?:幫我)?"
+    r"(?:點|播|播放|開|打開|選|按)(?:開)?(?:一下)?第一.*$|"
+    r"[，, ]*(?:然後|並且|並|再|接著|之後)(?:幫我)?(?:播放|播|點開|打開).*$")
+
+
+def _youtube_query_zh(text):
+    raw = (text or "").strip()
+    if any(w in raw for w in _YT_NOT_A_REQUEST_ZH):
+        return ""
+    q = _YT_TAIL_ZH.sub("", raw)
+    # 去掉「可以幫我在 YouTube 上」這類開頭
+    q = _re.sub(r"^(?:我想|我要|想)?(?:看|聽)?(?:可以|能不能|能|請|麻煩)?(?:你)?(?:幫我)?"
+                r"(?:打開|開啟|開)?\s*", "", q)
+    q = _re.sub(r"(?:在|去|到|用|上)?\s*(?:" + _YT_WORD.pattern + r")\s*"
+                r"(?:上面|裡面|上|裡)?(?:的)?", " ", q)
+    q = q.strip(" ，,。")
+    # 動詞
+    q = _re.sub(r"^(?:然後|再)?(?:幫我)?(?:搜尋|搜索|搜|找一下|找|查一下|查|播放|播|"
+                r"看一下|看|打開|開啟|開)(?:一下)?\s*", "", q)
+    q = _re.sub(r"(?:的)?(?:影片|視頻)?(?:給我看|來看|來聽|一下)?(?:好嗎|嗎|吧)?[。！!？?]*$",
+                "", q)
+    return q.strip(" ，,。「」")
+
+
+def _youtube_args_zh(m):
+    whole = m.string or ""
+    if not _is_zh(whole):
+        return None          # 純英文交給原本的英文規則
+    q = _youtube_query_zh(whole)
+    if len(q) < 2:
+        return None          # 「打開 YouTube」交給開啟規則
+    return {"query": q, "first": bool(_YT_FIRST_ZH.search(whole))}
+
+
+# 中文資料夾名稱 → 使用者資料夾底下的實際名稱
+_FOLDERS_ZH = {
+    "下載": "downloads", "桌面": "desktop", "文件": "documents", "我的文件": "documents",
+    "圖片": "pictures", "照片": "pictures", "影片": "videos", "音樂": "music",
+}
+_SITES_ZH = {"谷歌": "google", "估狗": "google", "油管": "youtube"}
+_ASKING_ZH = ("怎麼", "如何", "為什麼", "為何", "要怎樣", "什麼是")
+
+
+def _open_something_args_zh(m):
+    whole = (m.string or "").strip()
+    if not _is_zh(whole) or any(w in whole for w in _ASKING_ZH):
+        return None
+    t = (m.group("t") or "").strip().strip("。！？?!，, 「」")
+    if not t:
+        return None
+    # 「打開 YouTube 搜尋 xxx」是 YouTube 規則的事
+    if _YT_WORD.search(t) and len(_YT_WORD.sub("", t).strip()) > 1:
+        return None
+    folder = _re.sub(r"(?:的)?(?:資料夾|檔案夾|目錄)$", "", t).strip()
+    if folder in _FOLDERS_ZH:
+        return {"__tool": "open_folder", "path": _FOLDERS_ZH[folder]}
+    if m.group("v") == "開" and _is_zh(t) and _SITES_ZH.get(t) is None:
+        # 單一個「開」字太常見（開會、開冷氣），只接受確定的資料夾、網站或英文程式名
+        return None
+    if folder != t:          # 有說「資料夾」但不是常見的那幾個
+        return {"__tool": "open_folder", "path": folder}
+    low = _SITES_ZH.get(t, t).lower()
+    if low in _KNOWN_SITES:
+        return {"__tool": "open_url", "url": _KNOWN_SITES[low]}
+    if "." in low and " " not in low and not _is_zh(low):
+        return {"__tool": "open_url", "url": t}
+    t = _re.sub(r"(?:網站|網頁|程式|軟體|應用程式|App|app)$", "", t).strip() or t
+    return {"__tool": "open_application", "name": t}
 
 
 _YOUTUBE_SEARCH = "https://www.youtube.com/results?search_query="
@@ -912,6 +1051,8 @@ def _youtube_args(m):
     happens only if the tool actually runs - which also keeps the
     routing tests offline and instant.
     """
+    if _is_zh(m.string):
+        return None          # 中文句子交給下面的中文規則
     q = _youtube_query(m.string)
     if len(q) < 2:
         return None

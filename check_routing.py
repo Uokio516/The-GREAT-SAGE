@@ -96,18 +96,47 @@ MUST = [
     ("look at my screen", "look_at_screen", ""),
     ("what do you see", "look_at_screen", ""),
     ("what reminders do i have", "list_tasks", ""),
+
+    # --- 繁中化：中文指令 ---
+    ("現在幾點", "get_time", ""),
+    ("今天星期幾", "get_time", ""),
+    ("今天是幾月幾號", "get_time", ""),
+    ("顯存還剩多少", "get_system_status", ""),
+    ("幫我檢查硬碟", "get_system_status", ""),
+    ("我現在在用什麼程式", "get_focused_window", ""),
+    ("看一下我的螢幕", "look_at_screen", ""),
+    ("你看到什麼", "look_at_screen", ""),
+    ("我有什麼提醒", "list_tasks", ""),
+    ("搜尋台中明天的天氣", "web_search", "台中明天的天氣"),
+    ("幫我查一下 RTX 5090 的價格", "web_search", "RTX 5090"),
+    ("上網搜尋轉生史萊姆第四季什麼時候播", "web_search", "轉生史萊姆第四季"),
+    ("google 一下台灣高鐵時刻表", "web_search", "高鐵"),
+    ("在YouTube搜尋轉生史萊姆第四季片頭", "open_youtube", "轉生史萊姆第四季片頭"),
+    ("幫我在 YouTube 上播放 lofi 音樂", "open_youtube", "lofi 音樂"),
+    ("打開YouTube搜尋轉生史萊姆片頭然後點第一個影片", "open_youtube", "轉生史萊姆片頭"),
+    ("YouTube 找周杰倫的晴天", "open_youtube", "周杰倫的晴天"),
+    ("打開 Spotify", "open_application", "spotify"),
+    ("可以幫我打開 Discord 嗎", "open_application", "discord"),
+    ("開啟記事本", "open_application", "記事本"),
+    ("打開 YouTube", "open_url", "youtube.com"),
+    ("打開谷歌", "open_url", "google.com"),
+    ("打開下載資料夾", "open_folder", "=downloads"),
+    ("幫我開桌面", "open_folder", "=desktop"),
 ]
 
 # Asking for the top result must set first=True; a plain search must not.
 # "and click on the first video" was being stripped as noise and then
 # ignored, so it opened the results page and left Krazaa to click.
 FIRST_TRUE = [
+    "打開YouTube搜尋轉生史萊姆片頭然後點第一個影片",
+    "在 YouTube 上找 lofi 音樂，播第一個",
     "Search on YouTube that time I got reincarnated as a slime season 4 "
     "opening and click on the first video",
     "search youtube for rimuru fight scenes and play the first one",
     "search on youtube for lofi beats and open the first result",
 ]
 FIRST_FALSE = [
+    "在YouTube搜尋轉生史萊姆第四季片頭",
     "search on youtube for lofi beats",
     "play bohemian rhapsody on youtube",
     "search youtube for gundam openings",
@@ -124,6 +153,14 @@ MUST_NOT = [
     "find my desktop folder",                # ditto
     "why did you say that",
     "is youtube down right now",       # about YouTube, not a request for it
+    # --- 繁中化 ---
+    "你今天好嗎",
+    "你覺得爵士樂怎麼樣",
+    "要怎麼打開 pull request",
+    "搜尋我電腦裡的筆記檔案",
+    "YouTube 是不是掛了",
+    "大賢者是什麼技能",
+    "為什麼你剛剛那樣說",
 ]
 
 
