@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Great Sage HUD Prototype</title>
+<title>大賢者</title>
 <style>
   html, body { margin: 0; padding: 0; background: #030b08; overflow: hidden; height: 100%; }
   #canvas-wrap {
@@ -1659,15 +1659,15 @@ body.mini:hover #mini-exit { opacity: 1; }
 <!-- Window chrome, drawn by the app because there is no native title bar.
      The drag strip is declared BEFORE the buttons so the buttons paint
      over it, and it stops 132px short of the right edge regardless. -->
-<div id="win-drag" title="Drag to move"></div>
+<div id="win-drag" title="拖曳移動"></div>
 <div id="win-controls">
-  <button id="win-min" title="Minimise" aria-label="Minimise">
+  <button id="win-min" title="最小化" aria-label="最小化">
     <svg width="11" height="11" viewBox="0 0 11 11"><rect x="0" y="5" width="11" height="1.2" fill="currentColor"/></svg>
   </button>
-  <button id="win-max" title="Maximise" aria-label="Maximise">
+  <button id="win-max" title="最大化" aria-label="最大化">
     <svg width="11" height="11" viewBox="0 0 11 11"><rect x="0.6" y="0.6" width="9.8" height="9.8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
   </button>
-  <button id="win-close" title="Close" aria-label="Close">
+  <button id="win-close" title="關閉" aria-label="關閉">
     <svg width="11" height="11" viewBox="0 0 11 11"><path d="M0.5 0.5 L10.5 10.5 M10.5 0.5 L0.5 10.5" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
   </button>
 </div>
@@ -1679,20 +1679,20 @@ body.mini:hover #mini-exit { opacity: 1; }
 <!-- Title bar for the standalone panel window (?panel=...). Carries
      pywebview's drag class so the frameless window can be moved. -->
 <div id="panel-window-chrome" class="pywebview-drag-region">
-  <span id="panel-window-title">GREAT SAGE</span>
+  <span id="panel-window-title">大賢者</span>
   <div id="panel-window-buttons">
-    <button id="panel-win-min" title="Minimise">&#8211;</button>
-    <button id="panel-win-close" title="Close">&#10005;</button>
+    <button id="panel-win-min" title="最小化">&#8211;</button>
+    <button id="panel-win-close" title="關閉">&#10005;</button>
   </div>
 </div>
 
-<div id="mini-drag-handle" class="mini-keep" title="Drag to move">
+<div id="mini-drag-handle" class="mini-keep" title="拖曳移動">
   <svg viewBox="0 0 16 16" aria-hidden="true">
     <circle cx="4" cy="4" r="1.3"/><circle cx="9" cy="4" r="1.3"/>
     <circle cx="4" cy="9" r="1.3"/><circle cx="9" cy="9" r="1.3"/>
   </svg>
 </div>
-<div id="mini-exit" class="mini-keep" title="Back to full size">&#10005;</div>
+<div id="mini-exit" class="mini-keep" title="回到完整大小">&#10005;</div>
 <!-- Overlay reply bubble. The connector is an SVG line rather than a CSS
      triangle because it has to reach from the bubble back to the core at
      whatever angle the bubble ends up on. -->
@@ -1702,20 +1702,20 @@ body.mini:hover #mini-exit { opacity: 1; }
 <div id="core-pole"></div>
 
 <div id="caption-box">
-  <button class="caption-close-btn" title="Dismiss">✕</button>
+  <button class="caption-close-btn" title="關閉">✕</button>
   <div id="caption-text"></div>
 </div>
 <div id="cinematic-caption">
-  <button class="caption-close-btn" title="Dismiss">✕</button>
+  <button class="caption-close-btn" title="關閉">✕</button>
   <div id="cinematic-caption-text"></div>
 </div>
 <div id="bar-caption">
   <div id="bar-caption-frame">
-    <button class="caption-close-btn" title="Dismiss">✕</button>
+    <button class="caption-close-btn" title="關閉">✕</button>
     <div id="bar-caption-text"></div>
   </div>
 </div>
-<div id="meter">AMPLITUDE: <span id="meter-val">0.00</span></div>
+<div id="meter">音量：<span id="meter-val">0.00</span></div>
 
 <div id="wheel-reveal" class="mini-keep"></div>
 <div id="wheel-outline" class="mini-keep"></div>
@@ -1727,24 +1727,24 @@ body.mini:hover #mini-exit { opacity: 1; }
   <svg id="wheel-links" aria-hidden="true"></svg>
   <div class="wheel-item" data-target="settings">
     <div class="wheel-item-half"></div>
-    <span class="wheel-item-label">SETTINGS</span>
+    <span class="wheel-item-label">設定</span>
   </div>
   <div class="wheel-item" data-target="history">
     <div class="wheel-item-half"></div>
-    <span class="wheel-item-label">CHAT</span>
+    <span class="wheel-item-label">對話</span>
   </div>
   <div class="wheel-item" data-target="logs">
     <div class="wheel-item-half"></div>
-    <span class="wheel-item-label">LOGS</span>
+    <span class="wheel-item-label">紀錄</span>
   </div>
   <!-- Toggles the desktop overlay. Its label is rewritten to ENLARGE by
        enterMini/exitMini, since the same node serves both directions. -->
   <div class="wheel-item" data-target="overlay">
     <div class="wheel-item-half"></div>
-    <span class="wheel-item-label">OVERLAY</span>
+    <span class="wheel-item-label">浮窗</span>
   </div>
-  <div id="wheel-close" title="Close">
-    <span class="wheel-hex-label">EXIT</span>
+  <div id="wheel-close" title="關閉">
+    <span class="wheel-hex-label">結束</span>
   </div>
 </div>
 
@@ -1800,16 +1800,16 @@ body.mini:hover #mini-exit { opacity: 1; }
 
 
 <div id="controls">
-  TEST CONTROLS<br>
-  <button id="btn-speak">Simulate speech</button>
-  <button id="btn-notice">Say "Notice."</button>
-  <button id="btn-startup">Replay startup</button>
-  <button id="btn-mini">Overlay mode</button>
+  測試控制<br>
+  <button id="btn-speak">模擬說話</button>
+  <button id="btn-notice">說「告。」</button>
+  <button id="btn-startup">重播開場</button>
+  <button id="btn-mini">浮窗模式</button>
 </div>
 
 <div id="center-panel-overlay">
   <div id="center-panel-frame">
-    <button id="center-panel-close" title="Close">✕</button>
+    <button id="center-panel-close" title="關閉">✕</button>
     <!-- Its own element purely to carry the fisheye clip: the frame's
          clip-path is already driving the open/close bar animation and
          #center-panel's is driving the glitch-in reveal, and an element
@@ -1842,8 +1842,8 @@ body.mini:hover #mini-exit { opacity: 1; }
     <section id="panel-section-history" class="panel-section">
       <div id="chat-layout">
         <div id="chat-sidebar">
-          <button id="new-chat-btn">+ New chat</button>
-          <button id="memory-nav-btn" type="button">Memory</button>
+          <button id="new-chat-btn">+ 新對話</button>
+          <button id="memory-nav-btn" type="button">記憶</button>
           <hr class="sidebar-divider">
           <div id="topic-list"></div>
         </div>
@@ -1854,17 +1854,17 @@ body.mini:hover #mini-exit { opacity: 1; }
                styled as such. -->
           <header id="chat-identity">
             <div id="chat-identity-text">
-            <div id="chat-identity-name">UNIQUE SKILL: GREAT SAGE</div>
+            <div id="chat-identity-name">獨有技能：大賢者</div>
             <div id="chat-identity-model">
               <span id="chat-model-name">-</span><span id="chat-model-provider"></span><span id="chat-mode-badge"></span>
             </div>
             <button id="ai-settings-btn" type="button"
-                    title="AI settings - API keys, providers, permissions">&#9881;</button>
+                    title="AI 設定：API 金鑰、服務來源、權限">&#9881;</button>
             </div>
           </header>
 
           <div id="chat-view">
-            <div id="history-list"><div class="empty">(nothing yet - say something)</div></div>
+            <div id="history-list"><div class="empty">（還沒有內容，說點什麼吧）</div></div>
           </div>
 
           <!-- The SAME memory backend, shown here instead of in the core
@@ -1874,72 +1874,70 @@ body.mini:hover #mini-exit { opacity: 1; }
                this is what powers Great Sage and what it is allowed to
                touch. -->
           <div id="ai-settings-view" hidden>
-            <p class="panel-note">Keys are stored on this machine only, in
-               your user folder, and are never shown again once saved -
-               only replaced.</p>
+            <p class="panel-note">金鑰只存在這台電腦的使用者資料夾裡，
+               儲存後不會再顯示，只能覆蓋。</p>
 
             <div class="ai-set-group">
-              <label>Mode</label>
+              <label>模式</label>
               <select id="ai-mode"></select>
               <span class="ai-set-hint" id="ai-mode-hint"></span>
             </div>
 
             <div class="ai-set-group">
-              <label>Chat provider</label>
+              <label>對話模型來源</label>
               <select id="ai-chat-provider"></select>
-              <span class="ai-set-hint">Local uses Ollama and needs no key.</span>
+              <span class="ai-set-hint">local 使用本機的 Ollama，不需要金鑰。</span>
             </div>
 
             <div class="ai-set-group">
-              <label>Anthropic API key</label>
+              <label>Anthropic API 金鑰</label>
               <input id="ai-key-anthropic" type="password" autocomplete="off"
-                     placeholder="not set">
+                     placeholder="未設定">
             </div>
             <div class="ai-set-group">
-              <label>OpenAI API key</label>
+              <label>OpenAI API 金鑰</label>
               <input id="ai-key-openai" type="password" autocomplete="off"
-                     placeholder="not set">
+                     placeholder="未設定">
             </div>
 
             <div class="ai-set-group">
-              <label>Voice provider</label>
+              <label>語音來源</label>
               <select id="ai-tts-provider"></select>
-              <span class="ai-set-hint">F5 runs locally on your GPU.</span>
+              <span class="ai-set-hint">f5 在本機顯示卡上執行。</span>
             </div>
             <div class="ai-set-group">
-              <label>Voice API key</label>
+              <label>語音 API 金鑰</label>
               <input id="ai-key-tts" type="password" autocomplete="off"
-                     placeholder="not set">
+                     placeholder="未設定">
             </div>
 
             <div class="ai-set-group">
-              <label>Permissions</label>
+              <label>權限</label>
               <div class="ai-set-toggles">
                 <label><input type="checkbox" id="ai-allow-desktop">
-                  Open apps, folders and files on this machine</label>
+                  開啟這台電腦上的程式、資料夾和檔案</label>
                 <label><input type="checkbox" id="ai-allow-web">
-                  Open web pages and search online</label>
+                  開啟網頁、上網搜尋</label>
                 <label><input type="checkbox" id="ai-auto-gaming">
-                  Switch to Gaming mode automatically when a game is
-                  fullscreen, and switch back after</label>
+                  遊戲全螢幕時自動切換到遊戲模式，結束後切回</label>
               </div>
             </div>
 
             <div class="ai-set-actions">
               <span id="ai-set-status"></span>
-              <button id="ai-set-save" type="button">SAVE</button>
+              <button id="ai-set-save" type="button">儲存</button>
             </div>
           </div>
 
           <div id="memory-view" hidden>
-            <p class="panel-note">What Great Sage has kept about you.
-               Deleting a line removes it permanently.</p>
-            <input id="memory-search" type="text" placeholder="Search memory..."
+            <p class="panel-note">大賢者記住的關於你的事。
+               刪除後無法復原。</p>
+            <input id="memory-search" type="text" placeholder="搜尋記憶…"
                    autocomplete="off" />
-            <div id="memory-list"><div class="empty">(nothing remembered yet)</div></div>
+            <div id="memory-list"><div class="empty">（還沒有記住任何事）</div></div>
             <div id="memory-actions">
               <span id="memory-count"></span>
-              <button id="memory-clear-btn" type="button">Clear all</button>
+              <button id="memory-clear-btn" type="button">全部清除</button>
             </div>
           </div>
 
@@ -1956,12 +1954,12 @@ body.mini:hover #mini-exit { opacity: 1; }
             <div id="chat-attachments" hidden></div>
             <div id="chat-input-row">
           <button id="chat-attach" type="button"
-                  title="Attach an image (the model reads images)">+</button>
-          <input type="text" id="chat-input" placeholder="Ask Great Sage..." autocomplete="off">
-          <button id="chat-send">SEND</button>
+                  title="附加圖片（模型看得懂圖片）">+</button>
+          <input type="text" id="chat-input" placeholder="詢問大賢者…" autocomplete="off">
+          <button id="chat-send">送出</button>
           <button id="think-toggle" type="button" aria-pressed="false"
-                  title="Let Great Sage deliberate before answering. Slower.">THINK</button>
-          <span id="ws-status">connecting...</span>
+                  title="讓大賢者回答前先仔細思考，會比較慢。">深思</button>
+          <span id="ws-status">連線中…</span>
             </div>
           </div>
         </div>
@@ -1971,225 +1969,222 @@ body.mini:hover #mini-exit { opacity: 1; }
     <hr class="panel-divider">
 
     <section id="panel-section-settings" class="panel-section">
-      <button id="save-settings-btn" title="Everything here already auto-saves as you change it - this is just an explicit confirm">SAVE SETTINGS</button>
-      <button id="advanced-toggle-btn">ADVANCED CUSTOMIZATION</button>
+      <button id="save-settings-btn" title="這裡的設定一改就會自動儲存，這個按鈕只是再確認一次">儲存設定</button>
+      <button id="advanced-toggle-btn">進階自訂</button>
       <!-- Grouped into collapsible sections rather than one long column of
            sliders: everything is still one click away, but only the group
            you're actually adjusting is open at a time. -->
       <div id="advanced-panel" hidden>
-        <label class="slider-label">Theme</label>
+        <label class="slider-label">主題</label>
         <select id="theme-select">
-          <option value="great-sage">Great Sage</option>
-          <option value="raphael">Raphael</option>
+          <option value="great-sage">大賢者</option>
+          <option value="raphael">智慧之王</option>
         </select>
-        <div class="setting-hint">Every setting in the groups below belongs
-          to the selected theme. Change one and it saves to that theme only
-          &mdash; switch back and the other is exactly as you left it.</div>
+        <div class="setting-hint">下面各組設定都屬於目前選的主題，改了只會存到這個主題；
+          切回另一個主題時，它會維持你離開時的樣子。</div>
 
         <details class="settings-group" open>
-          <summary>Colour</summary>
+          <summary>顏色</summary>
           <div class="color-swatch-row">
             <div class="color-swatch-item">
               <input type="color" id="bg-base-color-picker" class="color-swatch-btn" value="#175c99">
-              <span>Background</span>
+              <span>背景</span>
             </div>
             <div class="color-swatch-item">
               <input type="color" id="bg-accent-color-picker" class="color-swatch-btn" value="#806b2e">
-              <span>Accent</span>
+              <span>強調色</span>
             </div>
             <div class="color-swatch-item">
               <input type="color" id="theme-color-picker" class="color-swatch-btn" value="#ffffff">
-              <span>Core glow</span>
+              <span>核心光暈</span>
             </div>
           </div>
-          <label class="slider-label">Hue shift</label>
+          <label class="slider-label">色相偏移</label>
           <input type="range" id="bg-hue-slider" min="0" max="100" value="0">
         </details>
 
         <details class="settings-group">
-          <summary>Lens &amp; edges</summary>
-          <label class="slider-label">Edge warp</label>
+          <summary>鏡頭與邊緣</summary>
+          <label class="slider-label">邊緣扭曲</label>
           <input type="range" id="corner-warp-slider" min="0" max="200" value="20">
-          <label class="slider-label">Colour fringing</label>
+          <label class="slider-label">色散</label>
           <input type="range" id="chroma-slider" min="0" max="400" value="100">
         </details>
 
         <details class="settings-group">
-          <summary>Bloom &amp; glare</summary>
-          <label class="slider-label">Bloom</label>
+          <summary>泛光與眩光</summary>
+          <label class="slider-label">泛光</label>
           <input type="range" id="bloom-slider" min="0" max="300" value="100">
-          <label class="slider-label">Glow spread</label>
+          <label class="slider-label">光暈擴散</label>
           <input type="range" id="bloom-spread-slider" min="40" max="260" value="100">
-          <label class="slider-label">Glare rays</label>
+          <label class="slider-label">眩光射線</label>
           <input type="range" id="glare-slider" min="0" max="300" value="100">
-          <label class="slider-label">Water</label>
+          <label class="slider-label">水面</label>
           <input type="range" id="water-slider" min="0" max="300" value="100">
         </details>
 
         <details class="settings-group">
-          <summary>Panel</summary>
-          <label class="slider-label">Darkness (0 = see-through, 100 = solid)</label>
+          <summary>面板</summary>
+          <label class="slider-label">暗度（0 = 透明，100 = 不透明）</label>
           <input type="range" id="panel-darkness-slider" min="0" max="100" value="60">
         </details>
 
         <details class="settings-group">
-          <summary>Magic circle</summary>
-          <label class="slider-label">Size (0 = off)</label>
+          <summary>魔法陣</summary>
+          <label class="slider-label">大小（0 = 關閉）</label>
           <input type="range" id="magic-circle-slider" min="0" max="400" value="70">
-          <label class="slider-label">Visibility</label>
+          <label class="slider-label">可見度</label>
           <input type="range" id="magic-circle-opacity-slider" min="0" max="300" value="15">
         </details>
 
         <details class="settings-group">
-          <summary>Model</summary>
-          <label class="slider-label">Ring sides (8 = octagon, 12 = dodecagon)</label>
+          <summary>模型外觀</summary>
+          <label class="slider-label">環的邊數（8 = 八角形，12 = 十二角形）</label>
           <input type="range" id="octagon-sides-slider" min="3" max="16" step="1" value="8">
-          <label class="slider-label">Wireframe</label>
+          <label class="slider-label">線框</label>
           <input type="range" id="wireframe-scale-slider" min="50" max="300" value="100">
-          <label class="slider-label">Core</label>
+          <label class="slider-label">核心</label>
           <input type="range" id="core-scale-slider" min="50" max="300" value="100">
-          <label class="slider-label">Octagon ring</label>
+          <label class="slider-label">八角環</label>
           <input type="range" id="octagon-scale-slider" min="50" max="300" value="100">
-          <label class="slider-label">Cube ring</label>
+          <label class="slider-label">方塊環</label>
           <input type="range" id="cube-ring-scale-slider" min="50" max="300" value="100">
-          <label class="slider-label">Outer ring (speak / think)</label>
+          <label class="slider-label">外環（說話／思考）</label>
           <input type="range" id="outer-ring-scale-slider" min="30" max="200" value="78">
-          <label class="slider-label">Ribbons</label>
+          <label class="slider-label">光帶</label>
           <input type="range" id="ribbon-scale-slider" min="50" max="300" value="100">
-          <label class="slider-label">Laser rays</label>
+          <label class="slider-label">雷射光束</label>
           <input type="range" id="laser-opacity-slider" min="0" max="300" value="55">
-          <label class="slider-label">Square fragments flying outward</label>
+          <label class="slider-label">向外飛散的方形碎片</label>
           <input type="range" id="particle-count-slider" min="0" max="420" value="185">
-          <label class="slider-label">Visual opacity</label>
+          <label class="slider-label">畫面不透明度</label>
           <input type="range" id="model-opacity-slider" min="10" max="100" value="100">
         </details>
 
         <details class="settings-group">
-          <summary>Atmosphere</summary>
-          <label class="slider-label">Dots pulled inward &mdash; how many</label>
+          <summary>氛圍</summary>
+          <label class="slider-label">向內吸入的光點：數量</label>
           <input type="range" id="infall-count-slider" min="0" max="460" value="240">
-          <label class="slider-label">Dots pulled inward &mdash; speed</label>
+          <label class="slider-label">向內吸入的光點：速度</label>
           <input type="range" id="infall-speed-slider" min="20" max="300" value="100">
-          <label class="slider-label">Background refraction &mdash; how much the field bends</label>
+          <label class="slider-label">背景折射：扭曲程度</label>
           <input type="range" id="refract-slider" min="0" max="250" value="100">
-          <label class="slider-label">Chromatic edge rings &mdash; brightness</label>
+          <label class="slider-label">邊緣彩色光環：亮度</label>
           <input type="range" id="rings-slider" min="0" max="250" value="100">
-          <label class="slider-label">Laser curve at screen edges (0 = straight)</label>
+          <label class="slider-label">螢幕邊緣的雷射彎曲度（0 = 直線）</label>
           <input type="range" id="edge-warp-curve-slider" min="0" max="250" value="0">
-          <label class="slider-label">Orbital bands &mdash; motion speed</label>
+          <label class="slider-label">軌道光帶：移動速度</label>
           <input type="range" id="band-speed-slider" min="0" max="300" value="100">
-          <label class="slider-label">Particles react to speech (0 = ambient only)</label>
+          <label class="slider-label">粒子隨說話反應（0 = 只有環境動態）</label>
           <input type="range" id="particle-speech-slider" min="0" max="200" value="0">
         </details>
 
         <details class="settings-group">
-          <summary>Speech reaction</summary>
-          <label class="slider-label">Pulse intensity</label>
+          <summary>說話反應</summary>
+          <label class="slider-label">脈動強度</label>
           <input type="range" id="speaking-pulse-slider" min="0" max="300" value="100">
-          <label class="slider-label">Glow intensity</label>
+          <label class="slider-label">光暈強度</label>
           <input type="range" id="speaking-glow-slider" min="0" max="500" value="200">
         </details>
 
         <details class="settings-group">
-          <summary>Position</summary>
-          <label class="slider-label">Horizontal</label>
+          <summary>位置</summary>
+          <label class="slider-label">水平</label>
           <input type="range" id="visual-pos-x-slider" min="-3" max="3" step="0.25" value="0">
-          <label class="slider-label">Vertical</label>
+          <label class="slider-label">垂直</label>
           <input type="range" id="visual-pos-y-slider" min="-2" max="3" step="0.25" value="1">
         </details>
       </div>
 
-      <h4>MASTER VOLUME</h4>
+      <h4>總音量</h4>
       <input type="range" id="volume-slider" min="0" max="100" value="80">
 
       <label>
         <input type="checkbox" id="sfx-toggle" checked>
-        Play sounds on Simulate Speech
+        模擬說話時播放音效
       </label>
 
       <label>
         <input type="checkbox" id="ui-sfx-toggle" checked>
-        Interface sounds (movement, panels, overlay)
+        介面音效（移動、面板、浮窗）
       </label>
-      <label class="slider-label">Interface sound volume</label>
+      <label class="slider-label">介面音效音量</label>
       <input type="range" id="ui-sfx-volume" min="0" max="100" value="70">
 
-      <label class="slider-label">Adjust one sound</label>
+      <label class="slider-label">單獨調整一個音效</label>
       <select id="sfx-pick"></select>
       <input type="range" id="sfx-gain" min="0" max="200" value="100">
-      <div class="setting-hint">Sets that one clip's level against the
-        others. It plays as you let go of the slider, so you can hear it.
-        100% is as recorded.</div>
+      <div class="setting-hint">調整這一個音效相對於其他音效的音量。
+        放開滑桿時會播放一次讓你試聽，100% 是原始音量。</div>
 
       <label>
         <input type="checkbox" id="startup-greeting-toggle" checked>
-        Play "Good morning" greeting on startup
+        啟動時播放「早安」問候
       </label>
 
-      <h4>CAPTION</h4>
+      <h4>字幕</h4>
       <label>
         <input type="checkbox" id="caption-toggle" checked>
-        Show caption text
+        顯示字幕
       </label>
       <label>
         <input type="checkbox" id="caption-sync-toggle" checked>
-        Caption waits for the voice
+        字幕等語音一起出現
       </label>
       <div style="opacity:0.55; font-size:11px; margin-bottom:6px;">
-        On: text appears line by line as each line is spoken &mdash; a
-        pause first while the voice is prepared. Off: text streams in as
-        it is written, ahead of the speech.
+        開啟：每一句念出來時才顯示那一句，語音準備好之前會先停頓一下。
+        關閉：文字一產生就顯示，會比語音快。
       </div>
       <div class="caption-mode-row">
-        <label><input type="radio" name="caption-mode" value="box"> Box</label>
-        <label><input type="radio" name="caption-mode" value="cinematic"> Cinematic</label>
-        <label><input type="radio" name="caption-mode" value="bar" checked> Bar</label>
-        <label><input type="radio" name="caption-mode" value="none"> None</label>
+        <label><input type="radio" name="caption-mode" value="box"> 方框</label>
+        <label><input type="radio" name="caption-mode" value="cinematic"> 電影</label>
+        <label><input type="radio" name="caption-mode" value="bar" checked> 橫條</label>
+        <label><input type="radio" name="caption-mode" value="none"> 無</label>
       </div>
-      <label class="slider-label">Opacity</label>
+      <label class="slider-label">不透明度</label>
       <input type="range" id="caption-opacity-slider" min="0" max="100" value="100">
-      <button id="caption-move-btn" title="Toggle drag-to-reposition">MOVE CAPTION</button>
+      <button id="caption-move-btn" title="切換拖曳移動字幕">移動字幕</button>
 
       <details class="settings-group">
-        <summary>Caption layout</summary>
-        <label class="slider-label">Cinematic dim</label>
+        <summary>字幕版面</summary>
+        <label class="slider-label">電影模式背景變暗</label>
         <input type="range" id="cinematic-dim-slider" min="0" max="100" value="45">
-        <label class="slider-label">Cinematic height</label>
+        <label class="slider-label">電影模式高度</label>
         <input type="range" id="cinematic-height-slider" min="-200" max="200" value="60">
-        <label class="slider-label">Bar height</label>
+        <label class="slider-label">橫條高度</label>
         <input type="range" id="bar-caption-y-slider" min="-200" max="200" value="-100">
       </details>
 
-      <h4>VOICE INPUT</h4>
+      <h4>語音輸入</h4>
       <div id="voice-input-settings">
-        <label class="slider-label">Voice key &mdash; global</label>
-        <button id="ptt-rebind-btn" data-combo="alt+1" title="Works from any window, even while a game has focus">Alt+1</button>
-        <div class="setting-hint">Hold to talk, release to send. Works from any
-          window &mdash; you do not have to leave your game.</div>
+        <label class="slider-label">說話快捷鍵（全域）</label>
+        <button id="ptt-rebind-btn" data-combo="alt+1" title="在任何視窗都有效，玩遊戲時也可以">Alt+1</button>
+        <div class="setting-hint">按住說話，放開送出。在任何視窗都有效，
+          不用離開遊戲。</div>
         <div id="ptt-status" class="setting-hint"></div>
 
         <label>
           <input type="checkbox" id="wake-word-toggle">
-          Voice activation ("Hey Great Sage" - listens continuously)
+          語音喚醒（說「大賢者」叫醒，會持續聆聽）
         </label>
-        <label class="slider-label">Trigger phrases (one per line)</label>
-        <textarea id="wake-words-input" rows="3">Hey Great Sage
-Hey Raphael
-Hey Ciel</textarea>
+        <label class="slider-label">喚醒詞（一行一個）</label>
+        <textarea id="wake-words-input" rows="3">大賢者
+嘿大賢者
+智慧之王</textarea>
       </div>
 
-      <h4>AUDIO DEVICES</h4>
+      <h4>音訊裝置</h4>
       <div id="audio-devices-settings">
-        <label class="slider-label">Microphone</label>
-        <select id="mic-device-select"><option value="">System default</option></select>
+        <label class="slider-label">麥克風</label>
+        <select id="mic-device-select"><option value="">系統預設</option></select>
 
-        <label class="slider-label">Speaker / audio output</label>
-        <select id="speaker-device-select"><option value="">System default</option></select>
-        <button id="speaker-detect-btn" type="button">Detect output devices</button>
+        <label class="slider-label">喇叭／音訊輸出</label>
+        <select id="speaker-device-select"><option value="">系統預設</option></select>
+        <button id="speaker-detect-btn" type="button">偵測輸出裝置</button>
         <div id="speaker-device-note" style="opacity:0.6; font-size:11px;"></div>
       </div>
 
-      <h4>AUDIO FX</h4>
+      <h4>音效處理</h4>
       <!-- Applied to everything that comes out of the voice - synthesized
            speech and the pre-recorded voice-line clips alike - so the two
            don't sound like they came from different rooms. Its own
@@ -2204,135 +2199,130 @@ Hey Ciel</textarea>
       <div id="voice-fx-settings">
         <label>
           <input type="checkbox" id="fx-enabled">
-          Enable voice effects
+          啟用語音特效
         </label>
-        <button id="fx-toggle-btn">VOICE FX CONTROLS</button>
+        <button id="fx-toggle-btn">語音特效控制</button>
         <div id="fx-panel" hidden>
         <details class="settings-group">
-          <summary>Reverb</summary>
-          <label class="slider-label">Amount (mix)</label>
+          <summary>殘響</summary>
+          <label class="slider-label">強度（混合比例）</label>
           <input type="range" id="fx-reverb-mix" min="0" max="200" value="0">
-          <label class="slider-label">Length (how long the tail rings)</label>
+          <label class="slider-label">長度（尾音持續多久）</label>
           <input type="range" id="fx-reverb-room" min="0" max="100" value="55">
-          <label class="slider-label">Damping (higher = duller, shorter)</label>
+          <label class="slider-label">阻尼（越高越悶、越短）</label>
           <input type="range" id="fx-reverb-damping" min="0" max="100" value="50">
         </details>
         <details class="settings-group">
-          <summary>Flanger</summary>
-          <label class="slider-label">Amount</label>
+          <summary>鑲邊效果</summary>
+          <label class="slider-label">強度</label>
           <input type="range" id="fx-flanger-mix" min="0" max="200" value="0">
-          <label class="slider-label">Depth</label>
+          <label class="slider-label">深度</label>
           <input type="range" id="fx-flanger-depth" min="0" max="100" value="35">
-          <label class="slider-label">Rate</label>
+          <label class="slider-label">速率</label>
           <input type="range" id="fx-flanger-rate" min="1" max="300" value="40">
-          <label class="slider-label">Feedback</label>
+          <label class="slider-label">回授</label>
           <input type="range" id="fx-flanger-feedback" min="0" max="95" value="35">
         </details>
         <details class="settings-group">
-          <summary>Phaser</summary>
-          <label class="slider-label">Amount</label>
+          <summary>相位效果</summary>
+          <label class="slider-label">強度</label>
           <input type="range" id="fx-phaser-mix" min="0" max="200" value="0">
-          <label class="slider-label">Rate</label>
+          <label class="slider-label">速率</label>
           <input type="range" id="fx-phaser-rate" min="1" max="300" value="60">
         </details>
         <details class="settings-group">
-          <summary>Delay</summary>
-          <label class="slider-label">Amount</label>
+          <summary>延遲</summary>
+          <label class="slider-label">強度</label>
           <input type="range" id="fx-delay-mix" min="0" max="200" value="0">
-          <label class="slider-label">Time</label>
+          <label class="slider-label">時間</label>
           <input type="range" id="fx-delay-time" min="1" max="100" value="22">
-          <label class="slider-label">Feedback</label>
+          <label class="slider-label">回授</label>
           <input type="range" id="fx-delay-feedback" min="0" max="90" value="25">
         </details>
         <details class="settings-group">
-          <summary>Pitch</summary>
-          <label class="slider-label">Semitones (0 = unchanged)</label>
+          <summary>音高</summary>
+          <label class="slider-label">半音（0 = 不變）</label>
           <input type="range" id="fx-pitch" min="-12" max="12" value="0">
         </details>
 
         <details class="settings-group">
-          <summary>Digital character</summary>
-          <label class="slider-label">Amount (0 = untouched voice)</label>
+          <summary>數位質感</summary>
+          <label class="slider-label">強度（0 = 原始聲音）</label>
           <input type="range" id="fx-raphael" min="0" max="150" value="0">
           <div style="opacity:0.55; font-size:11px;">
-            One dial over the whole chain: slight downward pitch, a faint
-            metallic resonance, a short comb layer, tight dynamics, a
-            touch of saturation, a small room, and a limiter. Meant to
-            sit under the voice &mdash; if you can point at it and name
-            the effect, it is turned up too far. Try 30&ndash;60%.
+            一個旋鈕控制整串效果：略降音高、淡淡的金屬共鳴、短梳狀濾波、
+            緊實的動態、一點飽和、小房間殘響和限幅器。它應該藏在聲音底下；
+            如果你聽得出是哪種效果，就是開太大了。建議 30～60%。
           </div>
         </details>
 
         <details class="settings-group">
-          <summary>Voice level</summary>
-          <label class="slider-label">Voice volume (dB, 0 = unchanged)</label>
+          <summary>語音音量</summary>
+          <label class="slider-label">語音音量（dB，0 = 不變）</label>
           <input type="range" id="fx-voice-gain" min="-24" max="12" value="0">
           <div style="opacity:0.55; font-size:11px;">
-            Speech only &mdash; separate from the master volume, and it
-            works even with the effect chain switched off.
+            只影響說話聲，和總音量分開；關掉特效時也有作用。
           </div>
         </details>
 
         <details class="settings-group">
-          <summary>EQ (4 band)</summary>
+          <summary>等化器（4 段）</summary>
           <div style="opacity:0.55; font-size:11px; margin-bottom:6px;">
-            Drag a point: up/down for gain, left/right for frequency.
-            Any band at 0 dB is bypassed. For harshness, pull the
-            <b>3 kHz</b> point down a few dB &mdash; that is where
-            sibilance and presence glare sit.
+            拖曳控制點：上下調增益，左右調頻率。設在 0 dB 的頻段不作用。
+            聲音刺耳時，把 <b>3 kHz</b> 那個點往下拉幾 dB，
+            齒音和刺耳感就在那裡。
           </div>
           <svg id="eq-graph" viewBox="0 0 400 150" preserveAspectRatio="none"
-               aria-label="Interactive equaliser curve"></svg>
+               aria-label="可互動的等化器曲線"></svg>
           <div class="eq-readout" id="eq-readout">&nbsp;</div>
-          <button id="eq-reset" class="settings-btn" type="button">Reset EQ</button>
+          <button id="eq-reset" class="settings-btn" type="button">重設等化器</button>
 
           <details class="settings-group">
-          <summary>Numeric values</summary>
-          <label class="slider-label">Low shelf &mdash; frequency (Hz)</label>
+          <summary>數值</summary>
+          <label class="slider-label">低頻架：頻率（Hz）</label>
           <input type="range" id="fx-eq-low-hz" min="40" max="400" value="120">
-          <label class="slider-label">Low shelf &mdash; gain (dB)</label>
+          <label class="slider-label">低頻架：增益（dB）</label>
           <input type="range" id="fx-eq-low-db" min="-15" max="15" value="0">
 
-          <label class="slider-label">Low mid &mdash; frequency (Hz)</label>
+          <label class="slider-label">中低頻：頻率（Hz）</label>
           <input type="range" id="fx-eq-lowmid-hz" min="200" max="1500" value="500">
-          <label class="slider-label">Low mid &mdash; gain (dB)</label>
+          <label class="slider-label">中低頻：增益（dB）</label>
           <input type="range" id="fx-eq-lowmid-db" min="-15" max="15" value="0">
-          <label class="slider-label">Low mid &mdash; width (Q x10)</label>
+          <label class="slider-label">中低頻：寬度（Q ×10）</label>
           <input type="range" id="fx-eq-lowmid-q" min="3" max="40" value="10">
 
-          <label class="slider-label">High mid (harshness) &mdash; frequency (Hz)</label>
+          <label class="slider-label">中高頻（刺耳感）：頻率（Hz）</label>
           <input type="range" id="fx-eq-highmid-hz" min="1500" max="8000" value="3000">
-          <label class="slider-label">High mid &mdash; gain (dB)</label>
+          <label class="slider-label">中高頻：增益（dB）</label>
           <input type="range" id="fx-eq-highmid-db" min="-15" max="15" value="0">
-          <label class="slider-label">High mid &mdash; width (Q x10)</label>
+          <label class="slider-label">中高頻：寬度（Q ×10）</label>
           <input type="range" id="fx-eq-highmid-q" min="3" max="40" value="10">
 
-          <label class="slider-label">High shelf &mdash; frequency (Hz)</label>
+          <label class="slider-label">高頻架：頻率（Hz）</label>
           <input type="range" id="fx-eq-high-hz" min="4000" max="10000" value="8000">
-          <label class="slider-label">High shelf &mdash; gain (dB)</label>
+          <label class="slider-label">高頻架：增益（dB）</label>
           <input type="range" id="fx-eq-high-db" min="-15" max="15" value="0">
           </details>
         </details>
         </div><!-- /fx-panel -->
       </div>
 
-      <h4>VOICE CUSTOMIZATION</h4>
-      <div id="voice-candidates-list" style="opacity:0.6;">(waiting for AI connection...)</div>
+      <h4>聲音自訂</h4>
+      <div id="voice-candidates-list" style="opacity:0.6;">（等待 AI 連線…）</div>
 
-      <h4>VOICE LINES</h4>
-      <label class="slider-label">Clip language</label>
+      <h4>預錄語音</h4>
+      <label class="slider-label">語音語言</label>
       <select id="voice-line-set-select">
-        <option value="japanese">Japanese</option>
+        <option value="japanese">日文</option>
       </select>
       <div style="opacity:0.55; font-size:11px; margin-bottom:6px;">
-        A set need not cover every phrase &mdash; anything without a clip
-        simply falls through to the live voice.
+        語音組不需要涵蓋每一句，沒有對應片段的句子會直接用即時合成的聲音念。
       </div>
       <label>
         <input type="checkbox" id="voice-clips-master-toggle">
-        Play recorded sound clips for trigger phrases (off = always live TTS)
+        固定句播放預錄片段（關閉 = 一律即時合成）
       </label>
-      <div id="voice-lines-list" style="opacity:0.6;">(waiting for AI connection...)</div>
+      <div id="voice-lines-list" style="opacity:0.6;">（等待 AI 連線…）</div>
     </section>
     </div>
     </div>
@@ -6481,7 +6471,7 @@ const MINI_CHAT_PAD = 3;
     }
   });
   document.getElementById('btn-notice').addEventListener('click', () => {
-    showCaption('Notice.');
+    showCaption('告。');
     if (sfxToggle.checked) {
       audioCtx.resume();
       noticeSound.currentTime = 0;
@@ -6672,7 +6662,7 @@ const MINI_CHAT_PAD = 3;
       // caption tracks the voice instead of racing ahead of it.
       if (captionFollowsSpeech && msg.text) {
         aiThinking = false;
-        spokenSoFar = spokenSoFar ? spokenSoFar + ' ' + msg.text : msg.text;
+        spokenSoFar = spokenSoFar ? spokenSoFar + (/[\u3400-\u9fff]/.test(msg.text) ? '' : ' ') + msg.text : msg.text;
         showCaption(spokenSoFar);
       }
       if (sfxToggle.checked) {
@@ -6770,7 +6760,7 @@ const MINI_CHAT_PAD = 3;
       if (Array.isArray(msg.chats)) {
         chatTopics.length = 0;
         msg.chats.forEach((c) => chatTopics.push({
-          id: c.id, title: c.title || 'New chat',
+          id: c.id, title: c.title || '新對話',
           created: c.created, updated: c.updated,
           summary: c.summary || '',
           titled: !!c.titled, renamed: !!c.renamed,
@@ -6811,16 +6801,15 @@ const MINI_CHAT_PAD = 3;
       if (el) {
         if (msg.failed) {
           el.className = 'setting-hint warn';
-          el.textContent = comboLabel(msg.failed) + ' is already used by another '
-            + 'application, so it was not changed. Still using '
-            + comboLabel(msg.binding) + ' — pick a different key.';
+          el.textContent = comboLabel(msg.failed) + ' 已被其他程式占用，所以沒有更改，'
+            + '目前仍使用 ' + comboLabel(msg.binding) + '，請換一個按鍵。';
         } else if (!msg.active) {
           el.className = 'setting-hint warn';
-          el.textContent = comboLabel(msg.binding || '') + ' could not be registered '
-            + '— another application already uses it. Pick a different key.';
+          el.textContent = comboLabel(msg.binding || '') + ' 無法註冊，'
+            + '已被其他程式占用，請換一個按鍵。';
         } else {
           el.className = 'setting-hint';
-          el.textContent = comboLabel(msg.binding) + ' is active.';
+          el.textContent = comboLabel(msg.binding) + ' 已啟用。';
         }
       }
       // A rejected rebind leaves the button showing a key that is not the
@@ -6864,7 +6853,7 @@ const MINI_CHAT_PAD = 3;
   function connectWebSocket() {
     ws = new WebSocket('ws://localhost:8765');
     ws.addEventListener('open', () => {
-      wsStatusEl.textContent = 'AI: connected';
+      wsStatusEl.textContent = 'AI：已連線';
       wsStatusEl.className = 'connected';
       // Say WHICH window this is. Several connect to the same server -
       // the HUD, the standalone overlay, and each settings/history panel
@@ -6882,7 +6871,7 @@ const MINI_CHAT_PAD = 3;
       } catch (err) { /* the socket just opened; nothing useful to do */ }
     });
     ws.addEventListener('close', () => {
-      wsStatusEl.textContent = 'AI: disconnected - retrying...';
+      wsStatusEl.textContent = 'AI：連線中斷，重試中…';
       wsStatusEl.className = 'disconnected';
       // Every state that ends a reply is cleared by a message from the
       // server, so a socket that dies mid-reply leaves them latched on
@@ -6937,7 +6926,7 @@ const MINI_CHAT_PAD = 3;
     cinematicRenderedText = ''; // next showCaption() starts a fresh typed-out caption
     ensureActiveTopic();
     const topic = currentTopic();
-    if (topic.title === 'New chat') {
+    if (topic.title === '新對話') {
       topic.title = text.length > 40 ? text.slice(0, 40) + '…' : text;
     }
     topic.messages.push({ role: 'user', text });
@@ -6984,7 +6973,7 @@ const MINI_CHAT_PAD = 3;
     const started = Date.now();
     const tick = () => {
       if (!el) return;
-      el.textContent = 'thinking... ' + Math.round((Date.now() - started) / 1000) + 's';
+      el.textContent = '思考中… ' + Math.round((Date.now() - started) / 1000) + ' 秒';
     };
     tick();
     thinkBusyTimer = setInterval(tick, 1000);
@@ -7020,7 +7009,7 @@ const MINI_CHAT_PAD = 3;
       img.src = thumb;
       cell.appendChild(img);
       const x = document.createElement('button');
-      x.type = 'button'; x.textContent = 'x'; x.title = 'Remove';
+      x.type = 'button'; x.textContent = 'x'; x.title = '移除';
       x.addEventListener('click', () => {
         pendingImages.splice(idx, 1);
         pendingThumbs.splice(idx, 1);
@@ -7134,7 +7123,7 @@ const MINI_CHAT_PAD = 3;
     cinematicRenderedText = '';
     ensureActiveTopic();
     const topic = currentTopic();
-    if (topic.title === 'New chat') {
+    if (topic.title === '新對話') {
       topic.title = text.length > 40 ? text.slice(0, 40) + '…' : text;
     }
     topic.messages.push({ role: 'user', text });
@@ -7177,7 +7166,7 @@ const MINI_CHAT_PAD = 3;
   let pttActive = false;
   pttRebindBtn.addEventListener('click', () => {
     pttRebinding = true;
-    pttRebindBtn.textContent = 'Press a key...';
+    pttRebindBtn.textContent = '請按下按鍵…';
   });
   document.addEventListener('keydown', (e) => {
     if (pttRebinding) {
@@ -7480,7 +7469,7 @@ const MINI_CHAT_PAD = 3;
         Math.max(Number(dbEl.min), eqDbAt(y))));
       hzEl.value = hz;
       dbEl.value = db;
-      eqReadout.textContent = band.name + ': ' + hz + ' Hz  '
+      eqReadout.textContent = ({ 'low': '低頻', 'low mid': '中低頻', 'high mid': '中高頻', 'high': '高頻' }[band.name] || band.name) + '：' + hz + ' Hz  '
         + (db > 0 ? '+' : '') + db + ' dB';
       eqRender();
       sendFx(false);   // no auto-preview mid-drag - it would retrigger constantly
@@ -7534,7 +7523,7 @@ const MINI_CHAT_PAD = 3;
     micDeviceSelect.innerHTML = '';
     const defaultOpt = document.createElement('option');
     defaultOpt.value = '';
-    defaultOpt.textContent = 'System default';
+    defaultOpt.textContent = '系統預設';
     micDeviceSelect.appendChild(defaultOpt);
     (inputs || []).forEach((d) => {
       const opt = document.createElement('option');
@@ -7572,12 +7561,12 @@ const MINI_CHAT_PAD = 3;
   }
   async function refreshSpeakerDeviceList() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-      speakerDeviceNote.textContent = 'This window cannot list audio devices.';
+      speakerDeviceNote.textContent = '這個視窗無法列出音訊裝置。';
       return;
     }
     if (typeof voiceLineAudio.setSinkId !== 'function') {
       speakerDeviceNote.textContent =
-        'This window cannot switch audio output - it will follow the Windows default device.';
+        '這個視窗無法切換音訊輸出，會跟隨 Windows 的預設裝置。';
       speakerDeviceSelect.disabled = true;
       return;
     }
@@ -7588,7 +7577,7 @@ const MINI_CHAT_PAD = 3;
       devices = await navigator.mediaDevices.enumerateDevices();
     } catch (err) {
       console.warn('Could not list audio output devices', err);
-      speakerDeviceNote.textContent = 'Could not read the device list.';
+      speakerDeviceNote.textContent = '無法讀取裝置清單。';
       return;
     }
     // Browsers deliberately hide the output device list behind MICROPHONE
@@ -7600,18 +7589,18 @@ const MINI_CHAT_PAD = 3;
     speakerDeviceSelect.innerHTML = '';
     const defaultOpt = document.createElement('option');
     defaultOpt.value = '';
-    defaultOpt.textContent = 'System default';
+    defaultOpt.textContent = '系統預設';
     speakerDeviceSelect.appendChild(defaultOpt);
     outputs.forEach((d) => {
       const opt = document.createElement('option');
       opt.value = d.deviceId;
-      opt.textContent = d.label || ('Output ' + d.deviceId.slice(0, 8));
+      opt.textContent = d.label || ('輸出 ' + d.deviceId.slice(0, 8));
       speakerDeviceSelect.appendChild(opt);
     });
     if (outputs.length === 0) {
       speakerDeviceNote.textContent =
-        'Only the system default is listed. Windows hides the speaker list until this ' +
-        'window has microphone access - click "Detect output devices" to unlock it.';
+        '目前只列出系統預設。Windows 要等這個視窗取得麥克風權限才會顯示喇叭清單，' +
+        '請按「偵測輸出裝置」解鎖。';
       speakerDetectBtn.hidden = false;
     } else {
       speakerDeviceNote.textContent = '';
@@ -7627,7 +7616,7 @@ const MINI_CHAT_PAD = 3;
   // on the Python side against the real device, not through this.)
   speakerDetectBtn.addEventListener('click', async () => {
     speakerDetectBtn.disabled = true;
-    speakerDeviceNote.textContent = 'Requesting device access...';
+    speakerDeviceNote.textContent = '正在要求裝置權限…';
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       stream.getTracks().forEach((tr) => tr.stop());
@@ -7635,8 +7624,7 @@ const MINI_CHAT_PAD = 3;
     } catch (err) {
       console.warn('Device access refused', err);
       speakerDeviceNote.textContent =
-        'Access refused, so only the system default can be listed. Audio will follow the ' +
-        'Windows default output device.';
+        '權限被拒絕，只能列出系統預設，聲音會跟隨 Windows 的預設輸出裝置。';
     } finally {
       speakerDetectBtn.disabled = false;
     }
@@ -9023,7 +9011,7 @@ const MINI_CHAT_PAD = 3;
     // section in a window of its own.
     document.body.classList.add('panel-window');
     const titleEl = document.getElementById('panel-window-title');
-    if (titleEl) titleEl.textContent = 'GREAT SAGE // ' + PANEL_WINDOW.toUpperCase();
+    if (titleEl) titleEl.textContent = '大賢者 // ' + ({ settings: '設定', history: '對話', logs: '紀錄', overlay: '浮窗' }[PANEL_WINDOW] || PANEL_WINDOW.toUpperCase());
     openCenterPanel(PANEL_WINDOW);
     // The Qt host has NO window.pywebview.api - that exists only under
     // pywebview. Commands travel by document.title, the same channel the
@@ -9089,7 +9077,7 @@ const MINI_CHAT_PAD = 3;
   function setOverlayNodeLabel() {
     const node = document.querySelector('.wheel-item[data-target="overlay"] '
                                         + '.wheel-item-label');
-    if (node) node.textContent = miniMode ? 'ENLARGE' : 'OVERLAY';
+    if (node) node.textContent = miniMode ? '放大' : '浮窗';
   }
   function enterMini() {
     if (typeof closeWheel === 'function' && wheelOpen) closeWheel(true);
@@ -9142,7 +9130,7 @@ const MINI_CHAT_PAD = 3;
     // page would have to guess.
     const maximised = await callHost('toggle_maximize');
     const btn = document.getElementById('win-max');
-    btn.title = maximised ? 'Restore' : 'Maximise';
+    btn.title = maximised ? '還原' : '最大化';
   });
 
   // Title-strip drag. Same mechanism as the overlay's, because that is
@@ -9421,7 +9409,7 @@ const MINI_CHAT_PAD = 3;
   function renderVoiceLineToggles(lines) {
     voiceLinesList.innerHTML = '';
     if (!lines || !lines.length) {
-      voiceLinesList.textContent = '(none configured)';
+      voiceLinesList.textContent = '（尚未設定）';
       return;
     }
     lines.forEach((line) => {
@@ -9429,7 +9417,7 @@ const MINI_CHAT_PAD = 3;
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.checked = line.enabled;
-      checkbox.title = 'Checked = play recorded clip. Unchecked = speak live via TTS.';
+      checkbox.title = '勾選 = 播放預錄片段；不勾 = 即時合成。';
       checkbox.addEventListener('change', () => {
         if (ws && ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify({
@@ -9448,7 +9436,7 @@ const MINI_CHAT_PAD = 3;
         previewBtn.type = 'button';
         previewBtn.className = 'voice-line-preview-btn';
         previewBtn.textContent = '▶';
-        previewBtn.title = 'Preview the recorded clip';
+        previewBtn.title = '試聽預錄片段';
         previewBtn.addEventListener('click', (e) => {
           e.preventDefault(); // don't toggle the checkbox via label click-through
           previewAudio.src = 'voice_lines/' + line.file;
@@ -9497,7 +9485,7 @@ const MINI_CHAT_PAD = 3;
   function renderCandidateVoices(voices) {
     voiceCandidatesList.innerHTML = '';
     if (!voices || !voices.length) {
-      voiceCandidatesList.textContent = '(none configured)';
+      voiceCandidatesList.textContent = '（尚未設定）';
       return;
     }
 
@@ -9556,8 +9544,8 @@ const MINI_CHAT_PAD = 3;
 
     const previewBtn = document.createElement('button');
     previewBtn.type = 'button';
-    previewBtn.textContent = 'PREVIEW';
-    previewBtn.title = 'Hear this voice without switching again';
+    previewBtn.textContent = '試聽';
+    previewBtn.title = '不切換也能先聽聽這個聲音';
     previewBtn.addEventListener('click', () => playPreview(select.value));
 
     voiceCandidatesList.appendChild(select);
@@ -9855,11 +9843,11 @@ const MINI_CHAT_PAD = 3;
     clearTimeout(saveSettingsTimer);
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ type: 'save_settings', settings: collectSettings() }));
-      saveSettingsBtn.textContent = 'SAVED';
+      saveSettingsBtn.textContent = '已儲存';
     } else {
-      saveSettingsBtn.textContent = 'NOT CONNECTED';
+      saveSettingsBtn.textContent = '未連線';
     }
-    setTimeout(() => { saveSettingsBtn.textContent = 'SAVE SETTINGS'; }, 1500);
+    setTimeout(() => { saveSettingsBtn.textContent = '儲存設定'; }, 1500);
   });
 
   // ---------- Visual size sliders ----------
@@ -10094,7 +10082,7 @@ const MINI_CHAT_PAD = 3;
 
   function ensureActiveTopic() {
     if (chatTopics.some((t) => t.id === activeTopicId)) return;
-    const topic = { id: Date.now(), title: 'New chat', messages: [],
+    const topic = { id: Date.now(), title: '新對話', messages: [],
                     created: Date.now(), updated: Date.now(), summary: '' };
     chatTopics.push(topic);
     activeTopicId = topic.id;
@@ -10138,13 +10126,13 @@ const MINI_CHAT_PAD = 3;
       if (opts.cancelLabel !== null) {
         const cancel = document.createElement('button');
         cancel.type = 'button';
-        cancel.textContent = opts.cancelLabel || 'CANCEL';
+        cancel.textContent = opts.cancelLabel || '取消';
         cancel.addEventListener('click', () => done(opts.prompt ? null : false));
         actions.appendChild(cancel);
       }
       const ok = document.createElement('button');
       ok.type = 'button';
-      ok.textContent = opts.okLabel || 'OK';
+      ok.textContent = opts.okLabel || '確定';
       if (opts.danger) ok.className = 'danger';
       ok.addEventListener('click',
         () => done(opts.prompt ? (input ? input.value : '') : true));
@@ -10164,11 +10152,11 @@ const MINI_CHAT_PAD = 3;
     });
   }
   const gsConfirm = (message, okLabel) =>
-    gsDialog({ message, okLabel: okLabel || 'CONFIRM', danger: true });
+    gsDialog({ message, okLabel: okLabel || '確認', danger: true });
   const gsPrompt = (message, value) =>
-    gsDialog({ message, value, prompt: true, okLabel: 'SAVE' });
+    gsDialog({ message, value, prompt: true, okLabel: '儲存' });
   const gsNotice = (message) =>
-    gsDialog({ message, okLabel: 'CLOSE', cancelLabel: null });
+    gsDialog({ message, okLabel: '關閉', cancelLabel: null });
 
   // ---------- Chat workspace: transcript <-> memory ----------
   // One backend, two views. Selecting Memory swaps what the main column
@@ -10258,7 +10246,7 @@ const MINI_CHAT_PAD = 3;
       if (!el) return;
       const masked = (cfg.keys || {})[name] || '';
       el.value = masked;
-      el.placeholder = masked ? 'saved' : 'not set';
+      el.placeholder = masked ? '已儲存' : '未設定';
     });
     const web = document.getElementById('ai-allow-web');
     const desk = document.getElementById('ai-allow-desktop');
@@ -10288,7 +10276,7 @@ const MINI_CHAT_PAD = 3;
           keys,
         }}));
         const st = document.getElementById('ai-set-status');
-        if (st) st.textContent = 'saved';
+        if (st) st.textContent = '已儲存';
         setTimeout(() => { const e = document.getElementById('ai-set-status');
                            if (e) e.textContent = ''; }, 2500);
       }
@@ -10321,8 +10309,8 @@ const MINI_CHAT_PAD = 3;
       const empty = document.createElement('div');
       empty.className = 'empty';
       empty.textContent = memoryFacts.length
-        ? '(nothing matches that search)'
-        : '(nothing remembered yet)';
+        ? '（沒有符合的記憶）'
+        : '（還沒有記住任何事）';
       memoryListEl.appendChild(empty);
     } else {
       shown.forEach((fact) => {
@@ -10336,7 +10324,7 @@ const MINI_CHAT_PAD = 3;
         del.className = 'memory-del';
         del.type = 'button';
         del.textContent = 'x';
-        del.title = 'Forget this';
+        del.title = '忘掉這一條';
         del.addEventListener('click', () => {
           // No confirm for a single line: it is one fact, the list is
           // right there, and a prompt per row would make tidying memory
@@ -10351,8 +10339,8 @@ const MINI_CHAT_PAD = 3;
     }
     if (memoryCountEl) {
       memoryCountEl.textContent = q
-        ? shown.length + ' of ' + memoryFacts.length + ' shown'
-        : memoryFacts.length + (memoryFacts.length === 1 ? ' memory' : ' memories');
+        ? '顯示 ' + shown.length + ' / ' + memoryFacts.length + ' 條'
+        : memoryFacts.length + ' 條記憶';
     }
   }
   if (memorySearchEl) memorySearchEl.addEventListener('input', renderMemory);
@@ -10360,9 +10348,9 @@ const MINI_CHAT_PAD = 3;
   if (memoryClearBtn) {
     memoryClearBtn.addEventListener('click', async () => {
       if (!memoryFacts.length) return;
-      const ok = await gsConfirm('Forget everything Great Sage has remembered?' +
+      const ok = await gsConfirm('要讓大賢者忘掉所有記憶嗎？' +
         String.fromCharCode(10) + String.fromCharCode(10) +
-        memoryFacts.length + ' memories will be deleted. This cannot be undone.', 'FORGET ALL');
+        '將刪除 ' + memoryFacts.length + ' 條記憶，無法復原。', '全部忘掉');
       if (!ok) return;
       if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ type: 'clear_memory' }));
@@ -10431,8 +10419,8 @@ const MINI_CHAT_PAD = 3;
       menu.appendChild(b);
     };
 
-    item('Rename', false, async () => {
-      const name = await gsPrompt('Rename this chat:', topic.title);
+    item('重新命名', false, async () => {
+      const name = await gsPrompt('為這段對話重新命名：', topic.title);
       if (name === null) return;                 // cancelled
       const clean = name.trim();
       if (!clean) return;
@@ -10443,16 +10431,16 @@ const MINI_CHAT_PAD = 3;
       saveChats();
     });
 
-    item('Summarize', false, () => requestChatAction('summarize_chat', topic));
-    item('Remember this chat', false,
+    item('摘要', false, () => requestChatAction('summarize_chat', topic));
+    item('記住這段對話', false,
          () => requestChatAction('remember_chat', topic));
 
-    item('Delete', true, async () => {
+    item('刪除', true, async () => {
       // Spec S7: deletion needs a second confirmation.
-      const ok = await gsConfirm('Delete this conversation?' +
+      const ok = await gsConfirm('要刪除這段對話嗎？' +
         String.fromCharCode(10) + String.fromCharCode(10) + topic.title +
         String.fromCharCode(10) + String.fromCharCode(10) +
-        'This cannot be undone.', 'DELETE');
+        '刪除後無法復原。', '刪除');
       if (!ok) return;
       const wasActive = topic.id === activeTopicId;
       chatTopics.splice(chatTopics.indexOf(topic), 1);
@@ -10506,7 +10494,7 @@ const MINI_CHAT_PAD = 3;
       menuBtn.className = 'topic-menu-btn';
       menuBtn.type = 'button';
       menuBtn.textContent = '\u22EF';          // midline horizontal ellipsis
-      menuBtn.title = 'Chat options';
+      menuBtn.title = '對話選項';
       menuBtn.addEventListener('click', (e) => {
         e.stopPropagation();                  // don't also select the row
         openTopicMenu(topic, menuBtn);
@@ -10525,17 +10513,20 @@ const MINI_CHAT_PAD = 3;
 
   // ---------- Action trail ----------
   const TOOL_LABELS = {
-    get_time: 'checked the clock',
-    get_system_status: 'checked this machine',
-    list_running_apps: 'listed open applications',
-    get_focused_window: 'checked the focused window',
-    open_url: 'opened a link',
-    open_application: 'launched an application',
-    open_folder: 'opened a folder',
-    search_files: 'searched your files',
-    look_at_screen: 'looked at your screen',
-    web_search: 'searched the web',
-    web_fetch: 'read a web page',
+    get_time: '查看時間',
+    get_system_status: '查看這台電腦的狀態',
+    list_running_apps: '列出開啟中的程式',
+    get_focused_window: '查看目前的視窗',
+    open_url: '開啟連結',
+    open_youtube: '開啟 YouTube',
+    list_tasks: '查看提醒',
+    set_reminder: '設定提醒',
+    open_application: '啟動程式',
+    open_folder: '開啟資料夾',
+    search_files: '搜尋檔案',
+    look_at_screen: '查看螢幕',
+    web_search: '上網搜尋',
+    web_fetch: '讀取網頁',
   };
   function addActionEntry(name, result) {
     const topic = currentTopic();
@@ -10550,7 +10541,7 @@ const MINI_CHAT_PAD = 3;
     historyList.innerHTML = '';
     const messages = currentTopic() ? currentTopic().messages : [];
     if (!messages.length) {
-      historyList.innerHTML = '<div class="empty">(nothing yet - say something)</div>';
+      historyList.innerHTML = '<div class="empty">（還沒有內容，說點什麼吧）</div>';
       return;
     }
     messages.forEach((entry) => {
@@ -10565,7 +10556,7 @@ const MINI_CHAT_PAD = 3;
         head.textContent = '> ' + entry.text;
         const body = document.createElement('div');
         body.className = 'action-body';
-        body.textContent = entry.result || '(no output)';
+        body.textContent = entry.result || '（沒有輸出）';
         body.hidden = true;
         head.addEventListener('click', () => { body.hidden = !body.hidden; });
         div.appendChild(head);
@@ -10575,7 +10566,7 @@ const MINI_CHAT_PAD = 3;
       }
       const roleLabel = document.createElement('span');
       roleLabel.className = 'role-label';
-      roleLabel.textContent = entry.role === 'user' ? 'YOU' : 'GREAT SAGE';
+      roleLabel.textContent = entry.role === 'user' ? '你' : '大賢者';
       const text = document.createElement('div');
       text.textContent = entry.text;
       div.appendChild(roleLabel);
@@ -10585,7 +10576,7 @@ const MINI_CHAT_PAD = 3;
       (entry.images || []).forEach((src) => {
         const im = document.createElement('img');
         im.src = src;
-        im.alt = 'attached image';
+        im.alt = '附加的圖片';
         div.appendChild(im);
       });
       div.appendChild(text);
@@ -10598,7 +10589,7 @@ const MINI_CHAT_PAD = 3;
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ type: 'reset_chat' }));
     }
-    const topic = { id: Date.now(), title: 'New chat', messages: [],
+    const topic = { id: Date.now(), title: '新對話', messages: [],
                     created: Date.now(), updated: Date.now(), summary: '' };
     chatTopics.push(topic);
     activeTopicId = topic.id;
@@ -10640,18 +10631,18 @@ const MINI_CHAT_PAD = 3;
   // clip sits wrong against the rest, which is a mixing job and belongs
   // to Krazaa rather than to a number I picked in the source.
   const SFX_LABELS = {
-    startup:       'Startup',
-    coreOpen:      'Core menu - open',
-    coreClose:     'Core menu - close',
-    uiHover:       'Core menu - hover',
-    uiClick:       'Core menu - click',
-    uiClick2:      'Core menu - click (2)',
-    panelOpen:     'Panel - open',
-    panelClose:    'Panel - close',
-    innerHover:    'Inner UI - hover',
-    innerClick:    'Inner UI - click',
-    overlayAppear: 'Overlay appears',
-    thinking:      'Thinking (loop)',
+    startup:       '開場',
+    coreOpen:      '核心選單：開啟',
+    coreClose:     '核心選單：關閉',
+    uiHover:       '核心選單：滑過',
+    uiClick:       '核心選單：點擊',
+    uiClick2:      '核心選單：點擊（2）',
+    panelOpen:     '面板：開啟',
+    panelClose:    '面板：關閉',
+    innerHover:    '內部介面：滑過',
+    innerClick:    '內部介面：點擊',
+    overlayAppear: '浮窗出現',
+    thinking:      '思考中（循環）',
   };
   const sfxPick = document.getElementById('sfx-pick');
   const sfxGainSlider = document.getElementById('sfx-gain');

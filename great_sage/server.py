@@ -1184,7 +1184,7 @@ async def run_server(engine, voice) -> None:
         phrases = saved.get("wake_words")
         if isinstance(phrases, list) and phrases:
             return phrases
-        return ["hey great sage", "hey raphael", "hey ciel"]
+        return ["大賢者", "嘿大賢者", "智慧之王", "hey great sage"]
 
     wake_word_listener = WakeWordListener(
         on_result=_route_voice_text, get_trigger_phrases=_get_wake_phrases

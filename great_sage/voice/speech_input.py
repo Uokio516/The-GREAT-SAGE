@@ -98,6 +98,26 @@ class PushToTalkRecorder:
             self._on_result(text)
 
 
+_CJK_SKIP = re.compile(r"[\s，。！？、；：,.!?;:「」『』\"'~～…]")
+
+
+def _strip_cjk_prefix(text: str, phrase: str):
+    """text 以 phrase 開頭（忽略空白標點）時，傳回 phrase 之後剩下的話。"""
+    want = _CJK_SKIP.sub("", phrase)
+    if not want:
+        return None
+    got, i = "", 0
+    while i < len(text) and len(got) < len(want):
+        ch = text[i]
+        i += 1
+        if _CJK_SKIP.match(ch):
+            continue
+        got += ch
+    if got != want:
+        return None
+    return _CJK_SKIP.sub(" ", text[i:]).strip()
+
+
 class WakeWordListener:
     """Runs its own background thread once started; stop() ends it.
     get_trigger_phrases is called fresh each utterance (not cached at
@@ -192,6 +212,13 @@ class WakeWordListener:
         norm_text = re.sub(r"[^a-z0-9 ]", "", text.lower()).strip()
         words = text.split()
         for phrase in self._get_trigger_phrases():
+            # 繁中化：原本的比對會把所有非英數字元濾掉，中文喚醒詞因此變成
+            # 空字串、永遠對不上。中文喚醒詞改成忽略空白和標點，逐字比對開頭。
+            if re.search(r"[㐀-鿿]", phrase or ""):
+                rest = _strip_cjk_prefix(text, phrase)
+                if rest is not None:
+                    return rest
+                continue
             norm_phrase = re.sub(r"[^a-z0-9 ]", "", phrase.lower()).strip()
             if not norm_phrase or not norm_text.startswith(norm_phrase):
                 continue

@@ -352,7 +352,7 @@ class PanelView(QWebEngineView):
         super().__init__()
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.resize(*PANEL_SIZE)
-        self.setWindowTitle(f"Great Sage - {section}")
+        self.setWindowTitle("大賢者 - " + {"settings": "設定", "history": "對話", "logs": "紀錄"}.get(section, section))
         self._drag_from = None
         self._filtered = None
         # Same reasoning as the overlay: QWebEngineView never receives

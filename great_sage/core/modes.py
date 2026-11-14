@@ -51,32 +51,30 @@ class Mode:
 
 MODES: Dict[str, Mode] = {
     "companion": Mode(
-        "companion", "COMPANION",
-        "Normal conversation. Everything available."),
+        "companion", "陪伴",
+        "一般對話，所有功能都可用。"),
     "work": Mode(
-        "work", "WORK",
-        "Everything available; Great Sage stays out of the way."),
+        "work", "工作",
+        "所有功能都可用，大賢者盡量不打擾。"),
     "gaming": Mode(
-        "gaming", "GAMING",
-        "Frees the GPU: the model is unloaded between replies, the HUD "
-        "drops to a low frame rate, and background listening stops.",
+        "gaming", "遊戲",
+        "釋放顯示卡：回覆之間卸載模型、介面降低幀率、"
+        "停止背景聆聽。",
         keep_model_loaded=False, hud_fps=15, wake_word=False),
     "coding": Mode(
-        "coding", "CODING",
-        "Everything available; longer answers are fine."),
+        "coding", "寫程式",
+        "所有功能都可用，回答可以比較長。"),
     "sleep": Mode(
-        "sleep", "SLEEP",
-        "Minimal. The model is unloaded and nothing runs in the "
-        "background until you speak first.",
+        "sleep", "休眠",
+        "最低限度。卸載模型，在你先開口之前背景什麼都不跑。",
         keep_model_loaded=False, hud_fps=10, wake_word=False),
     "private": Mode(
-        "private", "PRIVATE",
-        "Local only. No web access and no online model, regardless of "
-        "what the settings say.",
+        "private", "隱私",
+        "只用本機。不論設定怎麼寫，都不上網、不用線上模型。",
         allow_web=False, allow_online=False),
     "online": Mode(
-        "online", "ONLINE",
-        "An online model may be used if one is configured."),
+        "online", "線上",
+        "有設定線上模型時可以使用。"),
 }
 
 DEFAULT = "companion"
