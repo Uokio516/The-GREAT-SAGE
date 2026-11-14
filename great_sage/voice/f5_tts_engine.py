@@ -354,6 +354,38 @@ class F5TTSVoiceOutput(VoiceOutput):
                 f"Could not process reference audio "
                 f"'{self._reference_audio_path}': {exc}"
             ) from exc
+        self._cjk_speed = self._measure_cjk_speed()
+
+    def _measure_cjk_speed(self) -> float:
+        """繁中化：依參考聲音本身的語速，算出念中文要用的 speed。
+
+        F5 會照參考錄音的快慢來念。Common Voice 這類朗讀錄音一秒只念 2～3 個
+        字、句間還有停頓，照抄會慢到像在念經；反過來，參考錄音講很快時也會
+        太趕。這裡量出參考錄音「扣掉靜音後」每秒幾個中文字，再換算成讓輸出
+        落在 F5_CJK_CHARS_PER_SEC（預設每秒 4.5 字）的 speed。
+        """
+        try:
+            import soundfile as _sf
+            from great_sage.zh import CJK_RE
+            ref_audio, ref_text = self._ref_cache
+            if len(CJK_RE.findall(ref_text or "")) < 4:
+                return getattr(settings, "F5_SPEED_CJK", 1.0)
+            # 照 F5 自己估長度的方式算：輸出長度 ∝ 參考音「總長」÷ 參考逐字稿
+            # 的 UTF-8 位元組數 × 新句子的位元組數 ÷ speed。中文字和全形標點都是
+            # 3 位元組，所以用「位元組÷3」當字數。
+            info = _sf.info(ref_audio)
+            ref_len = info.frames / info.samplerate
+            ref_chars = len(ref_text.encode("utf-8")) / 3.0
+            ref_rate = ref_chars / max(ref_len, 0.5)
+            target = getattr(settings, "F5_CJK_CHARS_PER_SEC", 5.0)
+            speed = target / ref_rate * getattr(settings, "F5_SPEED_CJK", 1.0)
+            speed = float(min(max(speed, 0.8), 2.5))
+            log.info("Reference %s: %.1f 字/秒 → 中文 speed %.2f",
+                     os.path.basename(self._reference_audio_path), ref_rate, speed)
+            return speed
+        except Exception as exc:
+            log.warning("無法量測參考語速，改用固定值：%s", exc)
+            return getattr(settings, "F5_SPEED_CJK", 1.0)
 
     def set_reference_audio(self, reference_audio_path: str) -> None:
         """Switch the cloned voice at runtime (the HUD's voice picker)."""
@@ -411,6 +443,10 @@ class F5TTSVoiceOutput(VoiceOutput):
 
     def _generate_once(self, text: str):
         ref_audio, ref_text = self._ref_cache
+        if _is_cjk_text(text):
+            # 念之前先整理：拿掉頓號、引號、括號，數字轉中文念法（只影響語音）
+            from great_sage.zh import tts_normalize_zh
+            text = tts_normalize_zh(text)
         if _is_cjk_text(text) and not text.startswith("，"):
             # 繁中化：F5 念中文常把第一個詞吞掉（「主人，早安」只剩「早安」）。
             # 句首墊一個逗號當緩衝，實測能把第一個詞救回來。
@@ -423,7 +459,7 @@ class F5TTSVoiceOutput(VoiceOutput):
                 # 32 步才清楚；英文維持作者調好的 8 步。
                 nfe_step=(getattr(settings, "F5_NFE_STEP_CJK", 32)
                           if _is_cjk_text(text) else self._nfe_step),
-                speed=(getattr(settings, "F5_SPEED_CJK", 1.0)
+                speed=(getattr(self, "_cjk_speed", 1.0)
                        if _is_cjk_text(text) else getattr(settings, "F5_SPEED", 1.0)),
                 show_info=lambda *a, **k: None,
                 device=self._api.device,
