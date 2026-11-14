@@ -1343,7 +1343,10 @@ body.panel-window {
 }
 /* Everything except the panel itself. The canvas especially - leaving it
    would run the whole Three.js scene behind an opaque panel. */
-body.panel-window > *:not(#center-panel-overlay):not(#panel-window-chrome) {
+/* 例外：對話的三點選單（.topic-menu）和確認／輸入對話框（#gs-dialog-backdrop）
+   也是掛在 body 底下的浮動元素。原本這條規則把它們一起藏掉，所以在獨立的
+   對話面板視窗裡，點三個點、刪除、重新命名都「有動作但看不到」。 */
+body.panel-window > *:not(#center-panel-overlay):not(#panel-window-chrome):not(.topic-menu):not(#gs-dialog-backdrop) {
   display: none !important;
 }
 
@@ -1744,7 +1747,7 @@ body.mini:hover #mini-exit { opacity: 1; }
     <span class="wheel-item-label">浮窗</span>
   </div>
   <div id="wheel-close" title="關閉">
-    <span class="wheel-hex-label">結束</span>
+    <span class="wheel-hex-label">關閉</span>
   </div>
 </div>
 
