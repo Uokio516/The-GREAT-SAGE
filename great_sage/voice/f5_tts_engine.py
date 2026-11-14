@@ -411,12 +411,20 @@ class F5TTSVoiceOutput(VoiceOutput):
 
     def _generate_once(self, text: str):
         ref_audio, ref_text = self._ref_cache
+        if _is_cjk_text(text) and not text.startswith("，"):
+            # 繁中化：F5 念中文常把第一個詞吞掉（「主人，早安」只剩「早安」）。
+            # 句首墊一個逗號當緩衝，實測能把第一個詞救回來。
+            text = "，" + text
         try:
             wav, sample_rate, _ = self._infer_process(
                 ref_audio, ref_text, text,
                 self._api.ema_model, self._api.vocoder, self._api.mel_spec_type,
-                nfe_step=self._nfe_step,
-                speed=getattr(settings, "F5_SPEED", 1.0),
+                # 繁中化：中文在 8 步時咬字會糊掉（實測辨識只對一半），
+                # 32 步才清楚；英文維持作者調好的 8 步。
+                nfe_step=(getattr(settings, "F5_NFE_STEP_CJK", 32)
+                          if _is_cjk_text(text) else self._nfe_step),
+                speed=(getattr(settings, "F5_SPEED_CJK", 1.0)
+                       if _is_cjk_text(text) else getattr(settings, "F5_SPEED", 1.0)),
                 show_info=lambda *a, **k: None,
                 device=self._api.device,
             )

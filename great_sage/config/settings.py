@@ -595,7 +595,8 @@ CLONE_REFERENCE_AUDIO_PATH = os.path.join("voice_samples", "my_voice_clean.wav")
 # Reference clip to clone. A "<name>.txt" sidecar holding that clip's
 # transcript is optional but preferred - without one, F5 transcribes the
 # clip itself at startup, which is slower and less accurate.
-F5_REFERENCE_AUDIO_PATH = os.path.join("voice_samples", "candidates", "voice_a.wav")
+# 繁中化：預設改用台灣腔參考聲音（Windows 內建 Yating 語音在本機產生）。
+F5_REFERENCE_AUDIO_PATH = os.path.join("voice_samples", "candidates", "voice_tw.wav")
 
 # Flow-matching steps: the speed/quality dial, with no equivalent in an
 # autoregressive engine. Measured on one 9.5s line: 8 -> 2.16s (4.4x
@@ -676,6 +677,12 @@ CLONE_SPEED = 1.15
 # clearer. 0.92 is a small, deliberate stretch: enough to stop the rush
 # without sounding sedated.
 F5_SPEED = 0.92
+
+# 繁中化：中文的取樣步數與語速。8 步念中文會含糊，32 步清楚
+# （RTX 4060 筆電版上 10 秒的句子約 5 秒合成完）。台灣腔參考聲音
+# 本身念得偏慢，語速稍微調快。
+F5_NFE_STEP_CJK = 32
+F5_SPEED_CJK = 1.1
 
 # Above this many characters, a reply is synthesized in sentence-sized
 # pieces and joined into ONE clip rather than generated in a single pass.
